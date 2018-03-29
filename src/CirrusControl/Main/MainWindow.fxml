@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<!--suppress JavaFxDefaultTag -->
+<VBox minHeight="800.0" minWidth="500.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CirrusControl.Main.Controller">
+   <children>
+      <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="Control">
+            <content>
+                  <VBox>
+                     <children>
+                        <TitledPane animated="false" collapsible="false" maxWidth="1.7976931348623157E308" text="Settings">
+                           <content>
+                              <GridPane alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="ALWAYS" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <CheckBox mnemonicParsing="false" text="use MultiComServer" />
+                                    <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1">
+                                       <children>
+                                          <Label text="Scanner IP:">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <TextField text="192.168.0.100">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </TextField>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <Label text="Scanner ID:">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <Spinner accessibleRole="COMBO_BOX">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Spinner>
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <Label text="Model ID">
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Label>
+                                          <Spinner>
+                                             <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </HBox.margin>
+                                          </Spinner>
+                                       </children>
+                                    </HBox>
+                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Check Scanner" GridPane.columnIndex="2" GridPane.rowSpan="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Find Scanner" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                 </children>
+                              </GridPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="false" collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Commands">
+                           <content>
+                              <GridPane minHeight="140.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" text="[MOD #] Load Model">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" text="[LOC 1] Scan" GridPane.columnIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" text="[LOCN 1] Next Part" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" text="[LOCG 1] Get Position" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                 </children>
+                              </GridPane>
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="false" collapsible="false" text="Send Command">
+                           <content>
+                              <HBox>
+                                 <children>
+                                    <TextField maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button alignment="CENTER" mnemonicParsing="false" prefWidth="150.0" text="Send Command">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </content>
+                        </TitledPane>
+                     </children>
+                  </VBox>
+            </content>
+          </Tab>
+            <Tab text="AutoScan">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+          <Tab text="Statistics">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+            <Tab text="Calibration">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <HBox>
+         <children>
+            <ProgressBar fx:id="progressBarBottom" maxWidth="1.7976931348623157E308" progress="0.5" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </ProgressBar>
+            <Separator orientation="VERTICAL">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Separator>
+            <Label text="v 0.1">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </HBox>
+   </children>
+</VBox>
