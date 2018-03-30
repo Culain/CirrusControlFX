@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CirrusControlLibrary">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../CirrusControlLibrary" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
