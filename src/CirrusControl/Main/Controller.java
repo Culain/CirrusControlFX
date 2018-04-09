@@ -8,6 +8,7 @@ public class Controller {
     public ProgressBar progressBarBottom;
     public TextField textfield_ipaddr;
 
+
     CirrusScanner scanner = new CirrusScanner();
 
     public void onTextchangedIpaddr(InputMethodEvent inputMethodEvent) {
