@@ -18,11 +18,11 @@ public class CirrusScanner {
         assert true;
     }
 
-    public String getIPAddr() {
+    public String getIpAddress() {
         return this.ipAddress;
     }
 
-    public void setIPAddr(String value) {
+    public void setIpAddress(String value) {
         try {
             InetAddress.getByName(value);
             this.ipAddress = value;
