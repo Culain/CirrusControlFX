@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.CharBuffer;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Scanner;
@@ -37,33 +38,40 @@ class CirrusScanner {
     }
 
     private Response sendCommand(String command, int Master) {
-        String socket_ip = this.ipAddress;
-        int socket_port = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
+        String socketIp = this.ipAddress;
+        int socketPort = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
 
         try {
-            StringBuilder stringbuilder = new StringBuilder();
-            Socket socket = new Socket(socket_ip, socket_port);
-            Scanner sc = new Scanner(socket.getInputStream());
-            PrintStream p = new PrintStream(socket.getOutputStream());
+            if (command.startsWith("MOD")){     //clear Memory on Scanner
+                sendData(socketIp, socketPort, "MOD 0");
+            }
 
             Instant starts = Instant.now();
-//            float startTime = System.currentTimeMillis();
-            p.println(command);
-            while (sc.hasNext()){
-                stringbuilder.append(sc.next());
-                stringbuilder.append(" ");      //add whitespace for later parsing
-            }
+            String responseData = sendData(socketIp, socketPort, command);
             Instant ends = Instant.now();
-//            float stopTime = System.currentTimeMillis();
-//            float elapsed_time = stopTime - startTime;
-            socket.close();
 
-            Response response = new Response(stringbuilder.toString());
+            Response response = new Response(responseData);
             response.setTimeToSend(Duration.between(starts, ends).toMillis());
             return response;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return new Response("ERR");
+    }
+
+    private String sendData(String socket_ip, int socket_port, String data) throws IOException {
+
+        Socket socket = new Socket(socket_ip, socket_port);
+        Scanner sc = new Scanner(socket.getInputStream());
+        PrintStream p = new PrintStream(socket.getOutputStream());
+        StringBuilder stringbuilder = new StringBuilder();
+
+        p.println(data);
+        while (sc.hasNext()){
+            stringbuilder.append(sc.next());
+            stringbuilder.append(" ");      //add whitespace for later parsing
+        }
+        socket.close();
+        return stringbuilder.toString();
     }
 }
