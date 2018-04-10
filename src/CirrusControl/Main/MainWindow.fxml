@@ -2,11 +2,26 @@
 
 <!--suppress JavaFxDefaultTag -->
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" minHeight="800.0" minWidth="500.0" xmlns="http://javafx.com/javafx/9.0.1"
-      fx:controller="CirrusControl.Main.Controller">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox minHeight="800.0" minWidth="500.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CirrusControl.Main.Controller">
    <children>
       <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
@@ -97,31 +112,22 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                             minHeight="50.0" mnemonicParsing="false" onAction="#sendModCommand"
-                                             text="[MOD #] Load Model">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendModCommand" text="[MOD #] Load Model">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                             minHeight="50.0" mnemonicParsing="false" onAction="#sendLocCommand"
-                                             text="[LOC 1] Scan" GridPane.columnIndex="1">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocCommand" text="[LOC 1] Scan" GridPane.columnIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                             minHeight="50.0" mnemonicParsing="false" onAction="#sendLocnCommand"
-                                             text="[LOCN 1] Next Part" GridPane.rowIndex="1">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocnCommand" text="[LOCN 1] Next Part" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                             minHeight="50.0" mnemonicParsing="false" onAction="#sendLocgCommand"
-                                             text="[LOCG 1] Get Position" GridPane.columnIndex="1"
-                                             GridPane.rowIndex="1">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocgCommand" text="[LOCG 1] Get Position" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
@@ -146,6 +152,11 @@
                                     </Button>
                                  </children>
                               </HBox>
+                           </content>
+                        </TitledPane>
+                        <TitledPane animated="false" collapsible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Console" VBox.vgrow="ALWAYS">
+                           <content>
+                              <TextArea fx:id="textArea_Console" />
                            </content>
                         </TitledPane>
                      </children>

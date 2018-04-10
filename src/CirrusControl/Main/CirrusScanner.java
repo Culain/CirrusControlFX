@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Scanner;
 
 public class CirrusScanner {
@@ -35,10 +37,8 @@ public class CirrusScanner {
     }
 
     private Response sendCommand(String command, int Master) {
-        String temp;
         String socket_ip = this.ipAddress;
         int socket_port = port + Master + multicomserver * 30000; // add 30000 if the MultiCommandServer is used
-
 //        try (
 //                Socket socket = new Socket(socket_ip, socket_port);
 //                PrintWriter out =
@@ -64,13 +64,26 @@ public class CirrusScanner {
 //        }
 
         try {
+            StringBuilder stringbuilder = new StringBuilder();
             Socket socket = new Socket(socket_ip, socket_port);
             Scanner sc = new Scanner(socket.getInputStream());
             PrintStream p = new PrintStream(socket.getOutputStream());
+
+            Instant starts = Instant.now();
+//            float startTime = System.currentTimeMillis();
             p.println(command);
-            temp = sc.next();
-//            System.out.println(temp);
-            return new Response(temp);
+            while (sc.hasNext()){
+                stringbuilder.append(sc.next());
+                stringbuilder.append(" ");      //add whitespace for later parsing
+            }
+            Instant ends = Instant.now();
+//            float stopTime = System.currentTimeMillis();
+//            float elapsed_time = stopTime - startTime;
+            socket.close();
+
+            Response response = new Response(stringbuilder.toString());
+            response.setTimeToSend(Duration.between(starts, ends).toMillisPart());
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
         }

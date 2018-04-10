@@ -2,7 +2,6 @@ package CirrusControl.Main;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @SuppressWarnings("ALL")
@@ -20,10 +19,14 @@ public class Response {
     private float distance_deviation;
     private float angle_deviation;
     private int licenseTime;
-    private float timeToSend;
+    private int timeToSend;     //milliseconds
+
+    public void setTimeToSend(int timeToSend) {
+        this.timeToSend = timeToSend;
+    }
 
     public void setTimeToSend(float timeToSend) {
-        this.timeToSend = timeToSend;
+        this.timeToSend = (int) timeToSend;
     }
 
     public Response() {
@@ -34,7 +37,6 @@ public class Response {
 
         this.rawData = rawData;
         parse(rawData);
-
     }
 
     public Response(String rawData, String sendCommand) {
@@ -42,7 +44,10 @@ public class Response {
         this.rawData = rawData;
         this.sendCommand = sendCommand;
         parse(rawData);
+    }
 
+    public String toString(){
+        return String.format("Received: %s\nTime to Receive: %dms", this.rawData, this.timeToSend);
     }
 
     private void parse(@NotNull String rawData) {
@@ -68,13 +73,20 @@ public class Response {
 
     private void parseLOC(@NotNull String split_data) {        /* LOC status,avg,stdv,nbconfig,configID[] */
         String[] parameters = split_data.split(",");
-        status = Integer.parseInt(parameters[0]);
-        avg = Float.parseFloat(parameters[1]);
-        stdv = Float.parseFloat(parameters[2]);
-        nbConfig = Integer.parseInt(parameters[3]);
-        configID = new int[nbConfig];
-        for (int i = 0; i < nbConfig; i++) {
-            configID[i] = Integer.parseInt(parameters[4 + i]);
+        try {
+            status = Integer.parseInt(parameters[0]);
+            if (status != 0) {
+                return;
+            }                              // Break if there is an error status
+            avg = Float.parseFloat(parameters[1]);
+            stdv = Float.parseFloat(parameters[2]);
+            nbConfig = Integer.parseInt(parameters[3]);
+            configID = new int[nbConfig];
+            for (int i = 0; i < nbConfig; i++) {
+                configID[i] = Integer.parseInt(parameters[4 + i]);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+           System.out.println("ERROR: " + e);
         }
     }
 

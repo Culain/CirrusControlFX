@@ -2,22 +2,23 @@ package CirrusControl.Main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.InputMethodEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    public Spinner<Integer> Spinner_Scanner;
+
+    private CirrusScanner scanner = new CirrusScanner();
 
     public ProgressBar progressBarBottom;
     public TextField textfield_ipaddr;
     public Spinner<Integer> Spinner_Model;
-    private CirrusScanner scanner = new CirrusScanner();
+    public Spinner<Integer> Spinner_Scanner;
+    public TextArea textArea_Console;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -40,7 +41,8 @@ public class Controller implements Initializable {
     }
 
     public void sendLocCommand(ActionEvent actionEvent) {
-        scanner.sendCommand("LOC 1");
+        Response response = scanner.sendCommand("LOC 1");
+        textArea_Console.setText(response.toString());
     }
 
     public void sendLocnCommand(ActionEvent actionEvent) {
