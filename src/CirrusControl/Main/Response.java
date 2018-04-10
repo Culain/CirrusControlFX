@@ -70,9 +70,18 @@ public class Response {
         switch (command) {
             case "LOC":
                 parseLOC(split_data[1]);
+                break;
             case "LOCN":
                 parseLOCN(split_data[1]);
+                break;
+            case "MOD":
+                parseMOD(split_data[1]);
+                break;
         }
+    }
+
+    private void parseMOD(@NotNull String split_data) {
+        status = Integer.parseInt(split_data);
     }
 
     private void parseLOC(@NotNull String split_data) {        /* LOC status,avg,stdv,nbconfig,configID[] */
