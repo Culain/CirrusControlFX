@@ -23,6 +23,9 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Setup Model Spinner
+        scanner.setIpAddress(textfield_ipaddr.getText());
+        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
+
         SpinnerValueFactory<Integer> modelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1024, 1);
         Spinner_Model.setValueFactory(modelValueFactory);
 
@@ -32,12 +35,10 @@ public class Controller implements Initializable {
     }
 
     //Events
-    public void onTextchangedIpaddr(InputMethodEvent inputMethodEvent) {
-        scanner.setIpAddress(textfield_ipaddr.getText());
-    }
 
     public void sendModCommand(ActionEvent actionEvent) {
-        scanner.sendCommand(String.format("MOD %d", Integer.parseInt(Spinner_Model.getValue().toString())));
+        Response response = scanner.sendCommand(String.format("MOD %d", Integer.parseInt(Spinner_Model.getValue().toString())));
+        textArea_Console.setText(response.toString());
     }
 
     public void sendLocCommand(ActionEvent actionEvent) {
@@ -46,14 +47,19 @@ public class Controller implements Initializable {
     }
 
     public void sendLocnCommand(ActionEvent actionEvent) {
-        scanner.sendCommand("LOCN 1");
+        Response response = scanner.sendCommand("LOCN 1");
+        textArea_Console.setText(response.toString());
     }
 
     public void sendLocgCommand(ActionEvent actionEvent) {
-        scanner.sendCommand("LOCG 1");
+        Response response = scanner.sendCommand("LOCG 1");
+        textArea_Console.setText(response.toString());
     }
 
-
+    public void changeScannerIpAddress(ActionEvent actionEvent) {
+        scanner.setIpAddress(textfield_ipaddr.getText());
+        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
+    }
 }
 
 

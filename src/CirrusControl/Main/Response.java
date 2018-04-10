@@ -2,6 +2,7 @@ package CirrusControl.Main;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 @SuppressWarnings("ALL")
@@ -47,7 +48,7 @@ public class Response {
     }
 
     public String toString(){
-        return String.format("Received: %s\nTime to Receive: %dms", this.rawData, this.timeToSend);
+        return String.format("Received: %s\nTime to Receive: %sms", this.rawData, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
     private void parse(@NotNull String rawData) {

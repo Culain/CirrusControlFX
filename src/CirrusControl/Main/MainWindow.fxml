@@ -51,7 +51,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <TextField fx:id="textfield_ipaddr" onInputMethodTextChanged="#onTextchangedIpaddr" text="192.168.0.100">
+                                          <TextField fx:id="textfield_ipaddr" onAction="#changeScannerIpAddress" text="192.168.0.100">
                                              <HBox.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
@@ -117,12 +117,12 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocCommand" text="[LOC 1] Scan" GridPane.columnIndex="1">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocCommand" text="[LOC 1] Scan" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocnCommand" text="[LOCN 1] Next Part" GridPane.rowIndex="1">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="50.0" mnemonicParsing="false" onAction="#sendLocnCommand" text="[LOCN 1] Next Part" GridPane.columnIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </GridPane.margin>
