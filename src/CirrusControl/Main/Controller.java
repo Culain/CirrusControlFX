@@ -60,6 +60,11 @@ public class Controller implements Initializable {
         scanner.setIpAddress(textfield_ipaddr.getText());
         textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
     }
+
+    public void onChangedScannerIpAddress(InputMethodEvent inputMethodEvent) {
+        scanner.setIpAddress(textfield_ipaddr.getText());
+        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
+    }
 }
 
 

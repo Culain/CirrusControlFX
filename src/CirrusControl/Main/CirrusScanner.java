@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 class CirrusScanner {
 
-    private int multicomserver = 0;
+    private int multiCommandServer = 0;
     private int port = 20001;
     private String ipAddress = "127.0.0.1";
 
@@ -38,7 +38,7 @@ class CirrusScanner {
 
     private Response sendCommand(String command, int Master) {
         String socket_ip = this.ipAddress;
-        int socket_port = port + Master + multicomserver * 30000; // add 30000 if the MultiCommandServer is used
+        int socket_port = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
 
         try {
             StringBuilder stringbuilder = new StringBuilder();

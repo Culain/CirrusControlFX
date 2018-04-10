@@ -51,7 +51,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <TextField fx:id="textfield_ipaddr" onAction="#changeScannerIpAddress" text="192.168.0.100">
+                                          <TextField fx:id="textfield_ipaddr" onAction="#changeScannerIpAddress" onInputMethodTextChanged="#onChangedScannerIpAddress" text="192.168.0.100">
                                              <HBox.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>

@@ -48,7 +48,10 @@ public class Response {
     }
 
     public String toString(){
-        return String.format("Received: %s\nTime to Receive: %sms", this.rawData, NumberFormat.getNumberInstance().format(this.timeToSend));
+        return String.format("Received: %s\n" +
+                "Command:\t%s\n" +
+                "Status:\t\t%d\n" +
+                "Time to Receive: %sms", rawData, command, status, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
     private void parse(@NotNull String rawData) {
