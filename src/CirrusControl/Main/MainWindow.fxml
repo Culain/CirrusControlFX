@@ -51,7 +51,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <TextField fx:id="textfield_ipaddr" text="192.168.0.100">
+                                          <TextField fx:id="TextField_IpAddress" text="192.168.0.100">
                                              <HBox.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
@@ -65,7 +65,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                           <Spinner fx:id="Spinner_Scanner" accessibleRole="COMBO_BOX">
+                                           <Spinner fx:id="Spinner_Scanner" editable="true">
                                              <HBox.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </HBox.margin>

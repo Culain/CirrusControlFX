@@ -1,6 +1,7 @@
 package CirrusControl.Main;
 
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -19,6 +20,8 @@ final class CirrusScanner {
     private int port = 20001;
 //    private String ipAddress = "127.0.0.1";
     SimpleStringProperty ipAddress = new SimpleStringProperty("192.168.0.100");
+    SimpleIntegerProperty selectedModel = new SimpleIntegerProperty(1);
+    SimpleIntegerProperty selectedScanner = new SimpleIntegerProperty(0);
 
 
     CirrusScanner() {
