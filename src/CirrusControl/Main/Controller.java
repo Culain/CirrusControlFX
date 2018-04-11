@@ -9,12 +9,14 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+
     private CirrusScanner scanner = new CirrusScanner();
 
     public ProgressBar progressBarBottom;
     public TextField TextField_IpAddress;
     public Spinner<Integer> Spinner_Model;
     public Spinner<Integer> Spinner_Scanner;
+    public ListView guiConsole;
 //    public TextArea textArea_Console = new TextArea();
 
 
@@ -39,8 +41,15 @@ public class Controller implements Initializable {
 
     //Events
 
+    private void sendGuiCommand(String command) {
+        System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
+        Response response = scanner.sendCommand(command);
+        System.out.println(String.format(">>> %s",response.toString()));
+    }
+
     public void sendModCommand(ActionEvent actionEvent) {
-        Response response = scanner.sendCommand(String.format("MOD %d", Integer.parseInt(Spinner_Model.getValue().toString())));
+//        Response response = scanner.sendCommand(String.format("MOD %d", Integer.parseInt(Spinner_Model.getValue().toString())));
+        sendGuiCommand("MOD " + Spinner_Model.getValue());
 //        textArea_Console.setText(response.toString());
     }
 
