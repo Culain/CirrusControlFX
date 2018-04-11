@@ -1,5 +1,9 @@
 package CirrusControl.Main;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetAddress;
@@ -9,35 +13,51 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Scanner;
 
-class CirrusScanner {
+final class CirrusScanner {
 
     private int multiCommandServer = 0;
     private int port = 20001;
-    private String ipAddress = "127.0.0.1";
+//    private String ipAddress = "127.0.0.1";
+    SimpleStringProperty ipAddress = new SimpleStringProperty("192.168.0.100");
+
 
     CirrusScanner() {
         assert true;
     }
 
-    String getIpAddress() {
-        return this.ipAddress;
-    }
 
-    void setIpAddress(String value) {
-        try {
-            InetAddress.getByName(value);  //only try to parse. ignore value
-            this.ipAddress = value;
-        } catch (UnknownHostException e) {
-            //ignore
-        }
-    }
+
+//    String getIpAddress() { return ipAddress.getValue();}
+//
+//    void setIpAddress(String value){
+//        try {
+//            InetAddress.getByName(value);  //only try to parse. ignore value
+//            ipAddress.set(value);
+//        } catch (UnknownHostException e) {
+//            //ignore
+//        }
+//    }
+
+//    String getIpAddress() {
+//        return this.ipAddress;
+//    }
+
+//    void setIpAddress(String value) {
+//        try {
+//            InetAddress.getByName(value);  //only try to parse. ignore value
+//            this.ipAddress = value;
+//        } catch (UnknownHostException e) {
+//            //ignore
+//        }
+//    }
+
 
     Response sendCommand(String command) {
         return sendCommand(command, 0);
     }
 
     private Response sendCommand(String command, int Master) {
-        String socketIp = this.ipAddress;
+        String socketIp = ipAddress.getValue();
         int socketPort = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
 
         try {

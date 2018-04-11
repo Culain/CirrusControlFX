@@ -16,15 +16,14 @@ public class Controller implements Initializable {
     public TextField textfield_ipaddr;
     public Spinner<Integer> Spinner_Model;
     public Spinner<Integer> Spinner_Scanner;
-    public TextArea textArea_Console;
-
+//    public TextArea textArea_Console = new TextArea();
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Setup Model Spinner
-        scanner.setIpAddress(textfield_ipaddr.getText());
-        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
+
+        textfield_ipaddr.textProperty().bindBidirectional(scanner.ipAddress);
 
         SpinnerValueFactory<Integer> modelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1024, 1);
         Spinner_Model.setValueFactory(modelValueFactory);
@@ -38,33 +37,33 @@ public class Controller implements Initializable {
 
     public void sendModCommand(ActionEvent actionEvent) {
         Response response = scanner.sendCommand(String.format("MOD %d", Integer.parseInt(Spinner_Model.getValue().toString())));
-        textArea_Console.setText(response.toString());
+//        textArea_Console.setText(response.toString());
     }
 
     public void sendLocCommand(ActionEvent actionEvent) {
         Response response = scanner.sendCommand("LOC 1");
-        textArea_Console.setText(response.toString());
+//        textArea_Console.setText(response.toString());
     }
 
     public void sendLocnCommand(ActionEvent actionEvent) {
         Response response = scanner.sendCommand("LOCN 1");
-        textArea_Console.setText(response.toString());
+//        textArea_Console.setText(response.toString());
     }
 
     public void sendLocgCommand(ActionEvent actionEvent) {
         Response response = scanner.sendCommand("LOCG 1");
-        textArea_Console.setText(response.toString());
+//        textArea_Console.setText(response.toString());
     }
 
-    public void changeScannerIpAddress(ActionEvent actionEvent) {
-        scanner.setIpAddress(textfield_ipaddr.getText());
-        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
-    }
-
-    public void onChangedScannerIpAddress(InputMethodEvent inputMethodEvent) {
-        scanner.setIpAddress(textfield_ipaddr.getText());
-        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
-    }
+//    public void changeScannerIpAddress(ActionEvent actionEvent) {
+//        scanner.setIpAddress(textfield_ipaddr.getText());
+////        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
+//    }
+//
+//    public void onChangedScannerIpAddress(InputMethodEvent inputMethodEvent) {
+//        scanner.setIpAddress(textfield_ipaddr.getText());
+////        textArea_Console.setText(String.format("IP Changed to: %s", scanner.getIpAddress()));
+//    }
 }
 
 
