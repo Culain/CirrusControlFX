@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @SuppressWarnings("ALL")
 public class Response {
@@ -20,6 +21,11 @@ public class Response {
     private float angle_deviation;
     private int licenseTime;
     private int timeToSend;     //milliseconds
+    private Date creationTime;
+
+    public Response() {
+        this("ERR", null);
+    }
 
     public void setTimeToSend(int timeToSend) {
         this.timeToSend = timeToSend;
@@ -29,21 +35,22 @@ public class Response {
         this.timeToSend = (int) timeToSend;
     }
 
-    public Response() {
-        assert true;
-    }
-
     public Response(String rawData) {
-
+        this.sendCommand = null;
         this.rawData = rawData;
         parse(rawData);
+        this.creationTime = new Date();
     }
 
     public Response(String rawData, String sendCommand) {
-
-        this.rawData = rawData;
         this.sendCommand = sendCommand;
+        this.rawData = rawData;
         parse(rawData);
+        this.creationTime = new Date();
+    }
+
+    public String getCreationTime() {
+        return String.format("%d:%d:%d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
     }
 
     public String toString(){
