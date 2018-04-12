@@ -1,5 +1,7 @@
 package CirrusControl.Main;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -16,8 +18,9 @@ public class Controller implements Initializable {
     public TextField TextField_IpAddress;
     public Spinner<Integer> Spinner_Model;
     public Spinner<Integer> Spinner_Scanner;
-    public ListView guiConsole;
+    public ListView<Response> guiConsole;
 //    public TextArea textArea_Console = new TextArea();
+private ObservableList<Response> responseList = FXCollections.observableArrayList();
 
 
     @Override
@@ -33,10 +36,26 @@ public class Controller implements Initializable {
         SpinnerValueFactory<Integer> scannerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 9, 0);
         Spinner_Scanner.setValueFactory(scannerValueFactory);
 
+        //Setup guiConsole
+        guiConsole.setItems(responseList);
+
         //Tooltips
         TextField_IpAddress.setTooltip(new Tooltip("Select Scanner IP Address"));
         Spinner_Scanner.setTooltip(new Tooltip("0=Master, 1-9=Slave"));
         Spinner_Model.setTooltip(new Tooltip("Select Model Number"));
+
+//        guiConsole.setCellFactory(param -> new ListCell<Response>() {
+//            @Override
+//            protected void updateItem(Response item, boolean empty) {
+//                super.updateItem(item, empty);
+//
+//                if (empty || item == null || item.toString() == null) {
+//                    setText(null);
+//                } else {
+//                    setText(item.toString());
+//                }
+//            }
+//        });
     }
 
     //Events
@@ -45,6 +64,7 @@ public class Controller implements Initializable {
         System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
         Response response = scanner.sendCommand(command);
         System.out.println(String.format(">>> %s",response.toString()));
+        responseList.add(response);
     }
 
     public void sendModCommand(ActionEvent actionEvent) {
@@ -69,22 +89,5 @@ public class Controller implements Initializable {
     }
 
 }
-
-/*
-    ObservableList<Response> responseList = FXCollections.observableArrayList ();
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        responseList.add(new Response("LOC 0,1,2,3,4,5,6"));
-        lv_Console.setItems(responseList);
-    }
-
-    @FXML
-    ListView<Response> lv_Console = new ListView<>();
-
-    public void onClickAddItem(ActionEvent actionEvent) {
-        responseList.add(new Response("LOC 0,1,2,3,4,5,6"));
-    }
-*/
 
 
