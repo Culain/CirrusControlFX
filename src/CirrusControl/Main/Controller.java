@@ -70,4 +70,21 @@ public class Controller implements Initializable {
 
 }
 
+/*
+    ObservableList<Response> responseList = FXCollections.observableArrayList ();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        responseList.add(new Response("LOC 0,1,2,3,4,5,6"));
+        lv_Console.setItems(responseList);
+    }
+
+    @FXML
+    ListView<Response> lv_Console = new ListView<>();
+
+    public void onClickAddItem(ActionEvent actionEvent) {
+        responseList.add(new Response("LOC 0,1,2,3,4,5,6"));
+    }
+*/
+
 
