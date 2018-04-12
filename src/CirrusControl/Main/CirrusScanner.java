@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -77,12 +78,17 @@ final class CirrusScanner {
             return response;
         } catch (IOException e) {
             e.printStackTrace();
+            return new Response("ERR");
         }
-        return new Response("ERR");
     }
 
     private String sendData(String socket_ip, int socket_port, String data) throws IOException {
 
+//        try {       //TODO: shorter timeout (~5 seconds)
+//            Socket socket = new Socket(socket_ip, socket_port);
+//        } catch (ConnectException e) {
+//             System.out.println("Timeout");
+//        }
         Socket socket = new Socket(socket_ip, socket_port);
         Scanner sc = new Scanner(socket.getInputStream());
         PrintStream p = new PrintStream(socket.getOutputStream());

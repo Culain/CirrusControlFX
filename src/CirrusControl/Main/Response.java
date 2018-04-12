@@ -9,10 +9,9 @@ import java.util.ArrayList;
 public class Response {
 
     private String rawData;
-
-    private String sendCommand;
-    private String command;
-    private int status = -10;
+    private String sendCommand;  //Command that was send to the Scanner
+    private String command;      //Command that was received from the Scanner
+    private int status = -20;    //Status -20: Unknown Status
     private int nbConfig;
     private int[] configID;
     private float avg;
@@ -77,6 +76,8 @@ public class Response {
             case "MOD":
                 parseMOD(split_data[1]);
                 break;
+            default :
+                return;
         }
     }
 
@@ -126,4 +127,18 @@ public class Response {
         add("STS");
     }};
 
+//    private class UnknownCommandException extends Exception {
+//        public UnknownCommandException() {
+//            super();
+//        }
+//        public UnknownCommandException(String message) {
+//            super(message);
+//        }
+//        public UnknownCommandException(String message, Throwable cause) {
+//            super(message, cause);
+//        }
+//        public UnknownCommandException(Throwable cause) {
+//            super(cause);
+//        }
+//    }
 }
