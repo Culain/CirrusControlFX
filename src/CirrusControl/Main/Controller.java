@@ -44,18 +44,18 @@ private ObservableList<Response> responseList = FXCollections.observableArrayLis
         Spinner_Scanner.setTooltip(new Tooltip("0=Master, 1-9=Slave"));
         Spinner_Model.setTooltip(new Tooltip("Select Model Number"));
 
-//        guiConsole.setCellFactory(param -> new ListCell<Response>() {
-//            @Override
-//            protected void updateItem(Response item, boolean empty) {
-//                super.updateItem(item, empty);
-//
-//                if (empty || item == null || item.toString() == null) {
-//                    setText(null);
-//                } else {
-//                    setText(item.toString());
-//                }
-//            }
-//        });
+        guiConsole.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Response item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null || item.toString() == null) {
+                    setText(null);
+                } else {
+                    setText(item.toListEntry());
+                }
+            }
+        });
     }
 
     //Events

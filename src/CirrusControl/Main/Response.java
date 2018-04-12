@@ -50,14 +50,19 @@ public class Response {
     }
 
     public String getCreationTime() {
-        return String.format("%d:%d:%d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
+        return String.format("%02d:%02d:%02d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
     }
 
     public String toString(){
         return String.format("Received: %s\n" +
-                "Command:\t%s\n" +
-                "Status:\t\t%d\n" +
-                "Time to Receive: %sms", rawData, command, status, NumberFormat.getNumberInstance().format(this.timeToSend));
+                "Time to Receive: %sms", rawData, NumberFormat.getNumberInstance().format(this.timeToSend));
+    }
+
+    public String toListEntry() {
+        return String.format("%s \tReceived: %s\n" +
+                "\t\tCommand:\t%s\n" +
+                "\t\tStatus:\t\t%d\n" +
+                "\t\tTime to Receive: %sms", getCreationTime(), rawData, command, status, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
     private void parse(@NotNull String rawData) {
