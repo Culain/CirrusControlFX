@@ -23,7 +23,6 @@ public class Controller implements Initializable {
 //    public TextArea textArea_Console = new TextArea();
     private ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Bindings
@@ -96,8 +95,9 @@ public class Controller implements Initializable {
 
 
 abstract class ConsoleElement {
+    String message;
     //    Response response;
-    Date creationTime;
+    private Date creationTime;
 
     @SuppressWarnings("deprecated")
     String printTime(){
@@ -114,7 +114,7 @@ abstract class ConsoleElement {
     }
 
     public String toListEntry(){
-        return String.format("%s\t%s", printTime());
+        return String.format("%s\t%s", printTime(), message);
     }
 }
 
@@ -134,7 +134,6 @@ class ConsoleResponseElement extends ConsoleElement {
 }
 
 class ConsoleControlElement extends ConsoleElement {
-    private String message;
 
     ConsoleControlElement(String message){
         this.message = message;

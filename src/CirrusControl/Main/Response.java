@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 @SuppressWarnings("ALL")
 public class Response {
@@ -13,6 +14,47 @@ public class Response {
     private String sendCommand;  //Command that was send to the Scanner
     private String command;      //Command that was received from the Scanner
     private int status = -20;    //Status -20: Unknown Status
+    HashMap<Integer, String> statusList = new HashMap<Integer, String>() {{
+        put(-30, "Connection Timeout");
+        put(-20, "CirrusControlFX: No Status Message found");
+        put(-10, "CirrusControlFX: Error Message from Scanner");
+        put(-2, "RPL3D command failed (Not ok)");
+        put(-1, "RPL3D Unknown");
+        put(0, "RPL3D Command successful (All ok)");
+        put(1, "RPL3D Communication error");
+        put(2, "RPL3D Internal error 2");
+        put(3, "RPL3D Invalid model configuration file path (.cfg)");
+        put(4, "RPL3D Invalid input points");
+        put(5, "RPL3D Unknown model ID");
+        put(6, "RPL3D Corrupted model file");
+        put(7, "RPL3D Unloaded Model");
+        put(8, "RPL3D Invalid model file path (.3xx)");
+        put(9, "RPL3D Internal error 9");
+        put(10, "RPL3D Timeout - Calculation time exceeded");
+        put(11, "RPL3D Unsupported function");
+        put(100, "RPL3D Internal error 100");
+        put(101, "RPL3D Invalid input scan ID");
+        put(102, "RPL3D Internal error 102");
+        put(103, "RPL3D Internal error 103");
+        put(201, "RPL3D Script compilation error");
+        put(202, "RPL3D Sript execution error (Please check RPL3D console)");
+        put(1000, "RPL3D No localization : not enough points");
+        put(1001, "RPL3D No localization : not localizable part");
+        put(1002, "RPL3D No localization : localization out of tolerance");
+        put(1003, "RPL3D No localization : converging localization");
+        put(1004, "RPL3D No localization : orientation contraints not ok");
+        put(1005, "RPL3D No localization : volumic estimation not ok");
+        put(1006, "RPL3D No localization : surfacic estimation not ok");
+        put(2000, "RPL3D All parts overlapped");
+        put(3000, "RPL3D Zero gripper above part");
+        put(3001, "RPL3D Gripper collision with lower plane");
+        put(3002, "RPL3D Gripper collision");
+        put(90001, "Bridge Communication error with the HardwareInterface");
+        put(90002, "Bridge No cloud of points receive");
+        put(90003, "Status Unknown");
+        put(90004, "RPL3D Invalid license");
+        put(90005, "RPL3D Invalid Gripper Id");
+    }};
     private int nbConfig;
     private int[] configID;
     private float avg;
@@ -22,6 +64,7 @@ public class Response {
     private int licenseTime;
     private int timeToSend;     //milliseconds
     private Date creationTime;
+
 
     public Response() {
         this("ERR", null);
@@ -49,20 +92,32 @@ public class Response {
         this.creationTime = new Date();
     }
 
-    public String getCreationTime() {
-        return String.format("%02d:%02d:%02d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
-    }
+    private String statusMessage;
 
     public String toString(){
         return String.format("Received: %s\n" +
                 "Time to Receive: %sms", rawData, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
+    private ArrayList<String> commandList = new ArrayList<>() {{
+        add("STS");
+        add("MOD");
+        add("LOC");
+        add("LOCN ");
+        add("LOCG ");
+        add("CALP ");
+        add("CALC");
+    }};
+
+    @SuppressWarnings("deprecated")
+    public String getCreationTime() {
+        return String.format("%02d:%02d:%02d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
+    }
+
     public String toListEntry() {
         return String.format("Received: %s\n" +
-                "\t\tCommand:\t%s\n" +
-                "\t\tStatus:\t\t%d\n" +
-                "\t\tTime to Receive: %sms", rawData, command, status, NumberFormat.getNumberInstance().format(this.timeToSend));
+                "\t\tStatus:\t%s\n" +
+                "\t\tTime to Receive: %sms", rawData, statusMessage, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
     private void parse(@NotNull String rawData) {
@@ -73,25 +128,10 @@ public class Response {
         } else {
             parseEuler(rawData);
         }
+        parseStatusMessage();
     }
 
-    private void parseEuler(@NotNull String rawData) {
-        String[] split_data = rawData.split(" ");
-        command = split_data[0];
-        switch (command) {
-            case "LOC":
-                parseLOC(split_data[1]);
-                break;
-            case "LOCN":
-                parseLOCN(split_data[1]);
-                break;
-            case "MOD":
-                parseMOD(split_data[1]);
-                break;
-            default :
-                return;
-        }
-    }
+
 
     private void parseMOD(@NotNull String split_data) {
         status = Integer.parseInt(split_data);
@@ -129,28 +169,36 @@ public class Response {
         }
     }
 
+    private void parseStatusMessage() {
+        statusMessage = statusList.get(this.status);
+    }
+
     public boolean isCommand(String command) {
         return commandList.contains(command);
     }
 
-    private ArrayList<String> commandList = new ArrayList<>() {{
-        add("LOC");
-        add("MOD");
-        add("STS");
-    }};
+    private void parseEuler(@NotNull String rawData) {
+        String[] split_data = rawData.split(" ");
+        command = split_data[0];
+        switch (command) {
+            case "LOC":
+                parseLOC(split_data[1]);
+                break;
+            case "LOCN":
+                parseLOCN(split_data[1]);
+                break;
+            case "MOD":
+                parseMOD(split_data[1]);
+                break;
+            case "TIMEOUT":
+                parseTIMEOUT();
+            default:
+                return;
+        }
+    }
 
-//    private class UnknownCommandException extends Exception {
-//        public UnknownCommandException() {
-//            super();
-//        }
-//        public UnknownCommandException(String message) {
-//            super(message);
-//        }
-//        public UnknownCommandException(String message, Throwable cause) {
-//            super(message, cause);
-//        }
-//        public UnknownCommandException(Throwable cause) {
-//            super(cause);
-//        }
-//    }
+    private void parseTIMEOUT() {
+        statusMessage = "Timeout during Connection";
+        status = -30;
+    }
 }

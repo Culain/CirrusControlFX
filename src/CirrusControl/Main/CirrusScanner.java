@@ -1,16 +1,13 @@
 package CirrusControl.Main;
 
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.ConnectException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.SocketTimeoutException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Scanner;
@@ -84,12 +81,12 @@ final class CirrusScanner {
 
     private String sendData(String socket_ip, int socket_port, String data) throws IOException {
 
-//        try {       //TODO: shorter timeout (~5 seconds)
-//            Socket socket = new Socket(socket_ip, socket_port);
-//        } catch (ConnectException e) {
-//             System.out.println("Timeout");
-//        }
-        Socket socket = new Socket(socket_ip, socket_port);
+        Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress(socket_ip, socket_port), 1000);
+        } catch (SocketTimeoutException e) {
+            return "TIMEOUT";
+        }
         Scanner sc = new Scanner(socket.getInputStream());
         PrintStream p = new PrintStream(socket.getOutputStream());
         StringBuilder stringbuilder = new StringBuilder();
