@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -18,9 +19,9 @@ public class Controller implements Initializable {
     public TextField TextField_IpAddress;
     public Spinner<Integer> Spinner_Model;
     public Spinner<Integer> Spinner_Scanner;
-    public ListView<Response> guiConsole;
+    public ListView<ConsoleElement> guiConsole;
 //    public TextArea textArea_Console = new TextArea();
-private ObservableList<Response> responseList = FXCollections.observableArrayList();
+    private ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
 
 
     @Override
@@ -46,7 +47,7 @@ private ObservableList<Response> responseList = FXCollections.observableArrayLis
 
         guiConsole.setCellFactory(param -> new ListCell<>() {
             @Override
-            protected void updateItem(Response item, boolean empty) {
+            protected void updateItem(ConsoleElement item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (empty || item == null || item.toString() == null) {
@@ -62,9 +63,12 @@ private ObservableList<Response> responseList = FXCollections.observableArrayLis
 
     private void sendGuiCommand(String command) {
         System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
+        responseList.add(new ConsoleControlElement(String.format("Sending %s to %s", command, scanner.ipAddress.getValue())));
+
         Response response = scanner.sendCommand(command);
+
         System.out.println(String.format(">>> %s",response.toString()));
-        responseList.add(response);
+        responseList.add(new ConsoleResponseElement(response));
     }
 
     public void sendModCommand(ActionEvent actionEvent) {
@@ -91,3 +95,53 @@ private ObservableList<Response> responseList = FXCollections.observableArrayLis
 }
 
 
+abstract class ConsoleElement {
+    //    Response response;
+    Date creationTime;
+
+    @SuppressWarnings("deprecated")
+    String printTime(){
+        return String.format("%02d:%02d:%02d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
+    }
+
+    ConsoleElement(){
+        creationTime = new Date();
+    }
+
+    @Override
+    public String toString(){
+        return "";
+    }
+
+    public String toListEntry(){
+        return String.format("%s\t%s", printTime());
+    }
+}
+
+class ConsoleResponseElement extends ConsoleElement {
+    private Response response;
+
+
+    ConsoleResponseElement(Response response){
+        this.response = response;
+//        this.creationTime = new Date();
+    }
+
+    @Override
+    public String toListEntry(){
+        return String.format("%s\t%s", printTime(), response.toListEntry());
+    }
+}
+
+class ConsoleControlElement extends ConsoleElement {
+    private String message;
+
+    ConsoleControlElement(String message){
+        this.message = message;
+    }
+
+    @Override
+    public String toListEntry(){
+        return String.format("%s\t%s", this.printTime(), message);
+    }
+}

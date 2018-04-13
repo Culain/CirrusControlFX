@@ -59,10 +59,10 @@ public class Response {
     }
 
     public String toListEntry() {
-        return String.format("%s \tReceived: %s\n" +
+        return String.format("Received: %s\n" +
                 "\t\tCommand:\t%s\n" +
                 "\t\tStatus:\t\t%d\n" +
-                "\t\tTime to Receive: %sms", getCreationTime(), rawData, command, status, NumberFormat.getNumberInstance().format(this.timeToSend));
+                "\t\tTime to Receive: %sms", rawData, command, status, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
     private void parse(@NotNull String rawData) {
