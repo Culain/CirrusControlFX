@@ -69,27 +69,24 @@ public class Controller implements Initializable {
 
         System.out.println(String.format(">>> %s",response.toString()));
         responseList.add(new ConsoleResponseElement(response));
+
+        guiConsole.scrollTo(responseList.size() - 1);     //Scroll to last Entry
     }
 
     public void sendModCommand(ActionEvent actionEvent) {
-//        Response response = scanner.sendCommand(String.format("MOD %d", Integer.parseInt(Spinner_Model.getValue().toString())));
         sendGuiCommand("MOD " + Spinner_Model.getValue());
-//        textArea_Console.setText(response.toString());
     }
 
     public void sendLocCommand(ActionEvent actionEvent) {
-        Response response = scanner.sendCommand("LOC 1");
-//        textArea_Console.setText(response.toString());
+        sendGuiCommand("LOC 1");
     }
 
     public void sendLocnCommand(ActionEvent actionEvent) {
-        Response response = scanner.sendCommand("LOCN 1");
-//        textArea_Console.setText(response.toString());
+        sendGuiCommand("LOCN 1");
     }
 
     public void sendLocgCommand(ActionEvent actionEvent) {
-        Response response = scanner.sendCommand("LOCG 1");
-//        textArea_Console.setText(response.toString());
+        sendGuiCommand("LOCG 1");
     }
 
 }
