@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -96,16 +97,11 @@ public class Controller implements Initializable {
 
 abstract class ConsoleElement {
     String message;
-    //    Response response;
-    private Date creationTime;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private Date creationTime = new Date();
 
-    @SuppressWarnings("deprecated")
     String printTime(){
-        return String.format("%02d:%02d:%02d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
-    }
-
-    ConsoleElement(){
-        creationTime = new Date();
+        return sdf.format(creationTime);
     }
 
     @Override

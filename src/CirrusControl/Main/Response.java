@@ -3,6 +3,7 @@ package CirrusControl.Main;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -109,9 +110,10 @@ public class Response {
         add("CALC");
     }};
 
-    @SuppressWarnings("deprecated")
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
     public String getCreationTime() {
-        return String.format("%02d:%02d:%02d", creationTime.getHours(), creationTime.getMinutes(), creationTime.getSeconds());
+        return sdf.format(creationTime);
     }
 
     public String toListEntry() {
