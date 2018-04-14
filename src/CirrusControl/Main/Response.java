@@ -133,8 +133,6 @@ public class Response {
         parseStatusMessage();
     }
 
-
-
     private void parseMOD(@NotNull String split_data) {
         status = Integer.parseInt(split_data);
     }
