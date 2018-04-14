@@ -63,7 +63,7 @@ public class Controller implements Initializable {
 
     private void sendGuiCommand(String command) {
         System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
-        responseList.add(new ConsoleControlElement(String.format("Sending %s to %s", command, scanner.ipAddress.getValue())));
+        responseList.add(new ConsoleControlElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
 
         Response response = scanner.sendCommand(command);
 

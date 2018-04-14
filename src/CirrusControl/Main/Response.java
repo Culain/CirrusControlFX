@@ -117,7 +117,7 @@ public class Response {
     }
 
     public String toListEntry() {
-        return String.format("Received: %s\n" +
+        return String.format(">>> Received: \"%s\"\n" +
                 "\t\tStatus:\t%s\n" +
                 "\t\tTime to Receive: %sms", rawData, statusMessage, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
