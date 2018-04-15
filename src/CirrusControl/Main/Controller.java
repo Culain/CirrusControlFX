@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -18,6 +19,7 @@ public class Controller implements Initializable {
 
     public ProgressBar progressBarBottom;
     public TextField TextField_IpAddress;
+    public TextField TextField_SendCommand;
     public Spinner<Integer> Spinner_Model;
     public Spinner<Integer> Spinner_Scanner;
     public ListView<ConsoleElement> guiConsole;
@@ -62,14 +64,20 @@ public class Controller implements Initializable {
     //Events
 
     private void sendGuiCommand(String command) {
-        System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
-        responseList.add(new ConsoleControlElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
+        sendGuiCommand(command, true);
+    }
 
+    private void sendGuiCommand(String command, boolean output) {
+        if (output) {
+            System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
+            responseList.add(new ConsoleControlElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
+        }
         Response response = scanner.sendCommand(command);
 
-        System.out.println(String.format(">>> %s",response.toString()));
-        responseList.add(new ConsoleResponseElement(response));
-
+        if (output) {
+            System.out.println(String.format(">>> %s", response.toString()));
+            responseList.add(new ConsoleResponseElement(response));
+        }
         guiConsole.scrollTo(responseList.size() - 1);     //Scroll to last Entry
     }
 
@@ -89,6 +97,21 @@ public class Controller implements Initializable {
         sendGuiCommand("LOCG 1");
     }
 
+    public void sendStringCommand(ActionEvent actionEvent) {
+        sendGuiCommand(TextField_SendCommand.getText());
+    }
+
+    public void sendCheckCommand(ActionEvent actionEvent) {
+//        System.out.println(String.format("<<< Sending \"%s\" to %s", "STS 0",scanner.ipAddress.getValue()));
+//        responseList.add(new ConsoleControlElement(String.format("<<< Sending \"%s\" to [%s]", "STS 0", scanner.ipAddress.getValue())));
+//
+//        Response response = scanner.sendCommand("STS 0");
+//        if (response.getCommand() == "STS"){
+//            responseList.add(new ConsoleControlElement("Scanner online with IP: %s"));
+//
+//        }
+        sendGuiCommand("STS 1");
+    }
 }
 
 

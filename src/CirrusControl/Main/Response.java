@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import org.junit.*;
 
 @SuppressWarnings("ALL")
 public class Response {
@@ -71,6 +72,14 @@ public class Response {
         this("ERR", null);
     }
 
+    public int getStatus(){
+        return status;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
     public void setTimeToSend(int timeToSend) {
         this.timeToSend = timeToSend;
     }
@@ -122,6 +131,7 @@ public class Response {
                 "\t\tTime to Receive: %sms", rawData, statusMessage, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
+    @Test
     private void parse(@NotNull String rawData) {
         if (rawData == null || rawData.isEmpty()) throw new IllegalArgumentException();
 
