@@ -110,7 +110,7 @@ public class Controller implements Initializable {
 //            responseList.add(new ConsoleControlElement("Scanner online with IP: %s"));
 //
 //        }
-        sendGuiCommand("STS 1");
+        sendGuiCommand("STS 0");
     }
 }
 
