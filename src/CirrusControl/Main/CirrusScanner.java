@@ -53,6 +53,12 @@ final class CirrusScanner {
 //    }
 
 
+    /* REGEX FOR IP-ADDRESSES
+    \A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}
+  (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z
+     */
+
+
     Response sendCommand(String command) {
         return sendCommand(command, 0);
     }

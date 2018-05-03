@@ -5,12 +5,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 
+import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Controller implements Initializable {
 
@@ -112,8 +115,28 @@ public class Controller implements Initializable {
 //        }
         sendGuiCommand("STS 0");
     }
-}
 
+    public void findScannerCommand(ActionEvent actionEvent) {
+        //todo: ping all addresses in subnet and find Scanner online
+//        int timeout=1000;
+        String subnet = scanner.ipAddress.getValue().substring(0, scanner.ipAddress.getValue().lastIndexOf('.'));
+
+        ExecutorService taskExecutor = Executors.newFixedThreadPool(256);
+
+        for (int i=1;i<255;i++) {
+            String host = subnet + "." + i;
+//            PingerThread object = new PingerThread(host);
+//            object.start();
+            taskExecutor.execute(new PingerThread(host));
+        }
+        taskExecutor.shutdown();
+        try {
+            taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+    }
+}
 
 abstract class ConsoleElement {
     String message;
@@ -158,5 +181,53 @@ class ConsoleControlElement extends ConsoleElement {
     @Override
     public String toListEntry(){
         return String.format("%s\t%s", this.printTime(), message);
+    }
+}
+
+class ConsoleAddressElement extends ConsoleElement {
+    String ipaddress = "";
+    ConsoleAddressElement(String address){
+        this.ipaddress = address;
+    }
+
+    @Override
+    public String toListEntry() {
+        return String.format("%s", this.ipaddress);
+    }
+
+    @Override
+    public String toString() {
+        return this.ipaddress;
+    }
+}
+
+class PingerThread extends Thread implements Callable<String>
+{
+    String host ;
+
+    PingerThread(String ipaddress) {
+        this.host = ipaddress;
+    }
+    public void run()
+    {
+        try
+        {
+//            System.out.println("Thread " + currentThread().getId() + " is running");
+            if (InetAddress.getByName(host).isReachable(1000)) {
+                System.out.println(host + " is reachable");
+            }
+//            System.out.println("Thread " + currentThread().getId() + " is finished");
+        }
+        catch (Exception e)
+        {
+            // Throwing an exception
+            System.out.println ("Exception is caught");
+            System.out.println(e);
+        }
+    }
+
+    @Override
+    public String call() throws Exception {
+        return null;
     }
 }
