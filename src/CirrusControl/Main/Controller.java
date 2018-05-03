@@ -9,13 +9,14 @@ import javafx.scene.control.*;
 import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.*;
 
 public class Controller implements Initializable {
+
 
 
     private CirrusScanner scanner = new CirrusScanner();
@@ -26,6 +27,8 @@ public class Controller implements Initializable {
     public Spinner<Integer> Spinner_Model;
     public Spinner<Integer> Spinner_Scanner;
     public ListView<ConsoleElement> guiConsole;
+    public TabPane tabPaneCommands;
+
 //    public TextArea textArea_Console = new TextArea();
     private ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
 
@@ -117,24 +120,40 @@ public class Controller implements Initializable {
     }
 
     public void findScannerCommand(ActionEvent actionEvent) {
-        //todo: ping all addresses in subnet and find Scanner online
-//        int timeout=1000;
+        new Thread(this::findScannerCommandAction).start();
+    }
+
+    private void findScannerCommandAction() {
+        tabPaneCommands.setDisable(true);
+        String tempVal = scanner.ipAddress.getValue();
         String subnet = scanner.ipAddress.getValue().substring(0, scanner.ipAddress.getValue().lastIndexOf('.'));
 
-        ExecutorService taskExecutor = Executors.newFixedThreadPool(256);
+        ExecutorService taskExecutor = Executors.newFixedThreadPool(128);
+        Set<Future<String>> set = new HashSet<Future<String>>();
 
-        for (int i=1;i<255;i++) {
+        for (int i = 1; i < 255; i++) {
             String host = subnet + "." + i;
-//            PingerThread object = new PingerThread(host);
-//            object.start();
-            taskExecutor.execute(new PingerThread(host));
+            Callable<String> callable = new PingThread(host);
+            Future<String> future = taskExecutor.submit(callable);
+            set.add(future);
         }
         taskExecutor.shutdown();
         try {
             taskExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
-            System.out.println(e);
+            System.out.println(e.toString());
         }
+        for (Future future : set) {
+            try {
+                if (future.get() != null) {
+                    responseList.add(new ConsoleAddressElement((String) future.get()));
+                }
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+        }
+        scanner.ipAddress.set(tempVal);
+        tabPaneCommands.setDisable(false);
     }
 }
 
@@ -185,14 +204,15 @@ class ConsoleControlElement extends ConsoleElement {
 }
 
 class ConsoleAddressElement extends ConsoleElement {
-    String ipaddress = "";
+    private String ipaddress;
+
     ConsoleAddressElement(String address){
         this.ipaddress = address;
     }
 
     @Override
     public String toListEntry() {
-        return String.format("%s", this.ipaddress);
+        return String.format("Scanner [%s] is online", this.ipaddress);
     }
 
     @Override
@@ -201,33 +221,80 @@ class ConsoleAddressElement extends ConsoleElement {
     }
 }
 
-class PingerThread extends Thread implements Callable<String>
-{
-    String host ;
+class PingThread /*extends Thread*/ implements Callable<String> {
+    private String host;
 
-    PingerThread(String ipaddress) {
+    PingThread(String ipaddress) {
         this.host = ipaddress;
     }
-    public void run()
-    {
-        try
-        {
-//            System.out.println("Thread " + currentThread().getId() + " is running");
-            if (InetAddress.getByName(host).isReachable(1000)) {
-                System.out.println(host + " is reachable");
-            }
-//            System.out.println("Thread " + currentThread().getId() + " is finished");
-        }
-        catch (Exception e)
-        {
-            // Throwing an exception
-            System.out.println ("Exception is caught");
-            System.out.println(e);
-        }
-    }
+//    public void run()
+//    {
+//        try
+//        {
+////            System.out.println("Thread " + currentThread().getId() + " is running");
+//            if (InetAddress.getByName(host).isReachable(1000)) {
+//                System.out.println(host + " is reachable");
+//            }
+////            System.out.println("Thread " + currentThread().getId() + " is finished");
+//        }
+//        catch (Exception e)
+//        {
+//            // Throwing an exception
+//            System.out.println ("Exception is caught");
+//            System.out.println(e);
+//        }
+//    }
 
     @Override
-    public String call() throws Exception {
-        return null;
+    public String call() {
+        {
+            try {
+//            System.out.println("Thread " + currentThread().getId() + " is running");
+                if (InetAddress.getByName(host).isReachable(1000)) {
+                    System.out.println(host + " is pingable");
+                    CirrusScanner scanner = new CirrusScanner();
+                    scanner.ipAddress.set(host);
+                    Response response = scanner.sendCommand("STS 0");
+                    if (response.getStatus() == 0) {
+                        return host;
+                    }
+                }
+//            System.out.println("Thread " + currentThread().getId() + " is finished");
+            } catch (Exception e) {
+                // Throwing an exception
+                System.out.println("Exception is caught");
+                System.out.println(e.toString());
+            }
+            return null;
+        }
     }
 }
+//
+//class PingCallable implements Callable<Response> {
+//    private CirrusScanner scanner = new CirrusScanner();
+//    private String host;
+//
+//    PingCallable(String host){
+//        this.host = host;
+//    }
+//    @Override
+//    public Response call() /*throws Exception */{
+//        try {
+////            System.out.println("Thread " + currentThread().getId() + " is running");
+//            if (InetAddress.getByName(host).isReachable(1000)) {
+//                CirrusScanner scanner = new CirrusScanner();
+//                scanner.ipAddress.set(host);
+//                Response response = scanner.sendCommand("STS 0");
+//                if (response.getStatus() == 0){
+//                    return host;
+//                }
+//            }
+////            System.out.println("Thread " + currentThread().getId() + " is finished");
+//        } catch (Exception e) {
+//            // Throwing an exception
+//            System.out.println("Exception is caught");
+//            System.out.println(e);
+//        }
+//        return null;
+//    }
+//}
