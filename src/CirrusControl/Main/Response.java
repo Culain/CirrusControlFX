@@ -115,6 +115,7 @@ public class Response {
         put(90003, "Status Unknown");
         put(90004, "RPL3D Invalid license");
         put(90005, "RPL3D Invalid Gripper Id");
+        put(90009, "RPL3D Demo Licence");
     }};
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
