@@ -1,5 +1,7 @@
 package CirrusControl.Main;
 
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,10 +19,6 @@ import java.util.concurrent.*;
 
 public class Controller implements Initializable {
 
-
-
-    private CirrusScanner scanner = new CirrusScanner();
-
     public ProgressBar progressBarBottom;
     public TextField TextField_IpAddress;
     public TextField TextField_SendCommand;
@@ -28,8 +26,8 @@ public class Controller implements Initializable {
     public Spinner<Integer> Spinner_Scanner;
     public ListView<ConsoleElement> guiConsole;
     public TabPane tabPaneCommands;
-
-//    public TextArea textArea_Console = new TextArea();
+    private CirrusScanner scanner = new CirrusScanner();
+    //    public TextArea textArea_Console = new TextArea();
     private ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
 
     @Override
@@ -53,17 +51,75 @@ public class Controller implements Initializable {
         Spinner_Scanner.setTooltip(new Tooltip("0=Master, 1-9=Slave"));
         Spinner_Model.setTooltip(new Tooltip("Select Model Number"));
 
-        guiConsole.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(ConsoleElement item, boolean empty) {
-                super.updateItem(item, empty);
+/*        guiConsole.setCellFactory(lv -> {
+ *//*           ListCell cell = new ListCell<>() {
+                @Override
+                protected void updateItem(ConsoleElement item, boolean empty) {
+                    super.updateItem(item, empty);
 
-                if (empty || item == null || item.toString() == null) {
-                    setText(null);
-                } else {
-                    setText(item.toListEntry());
+                    if (empty || item == null || item.toString() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.toListEntry());
+                    }
                 }
+            };*//*
+            ListCell<String> cell = new ListCell<>();
+            ContextMenu contextMenu = new ContextMenu();
+
+//            MenuItem editItem = new MenuItem();
+//            editItem.textProperty().bind(Binding.format("E"))
+            MenuItem deleteItem = new MenuItem();
+            deleteItem.textProperty().bind(Bindings.format("Delete \"%s\"", cell.itemProperty()));
+            deleteItem.setOnAction(event -> guiConsole.getItems().remove(cell.getItem()));
+            contextMenu.getItems().addAll(*//*editItem,*//* deleteItem);
+        });*/
+        guiConsole.setCellFactory(lv -> {
+
+            ListCell<ConsoleElement> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(ConsoleElement item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty || item == null || item.toString() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.toListEntry());
+                    }
+                }
+            };
+
+            ContextMenu contextMenu = new ContextMenu();
+
+
+//            MenuItem editItem = new MenuItem();
+//            editItem.textProperty().bind(Bindings.format("Edit \"%s\"", cell.itemProperty()));
+//            editItem.setOnAction(event -> {
+//                String item = cell.getItem();
+//                // code to edit item...
+//            });
+            MenuItem deleteItem = new MenuItem();
+            deleteItem.textProperty().bind(Bindings.format("Delete Item"));
+            deleteItem.setOnAction(event -> guiConsole.getItems().remove(cell.getItem()));
+            contextMenu.getItems().add(deleteItem);
+
+            if (cell.getClass().equals(ConsoleAddressElement.class)){
+                MenuItem setAddress = new MenuItem();
+                setAddress.textProperty().bind(Bindings.format("set Address"));
+                setAddress.setOnAction(event -> scanner.ipAddress.setValue(cell.getItem().toString()));
+                contextMenu.getItems().add(setAddress);
             }
+
+//            cell.textProperty().bind(cell.itemProperty());
+
+            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+                if (isNowEmpty) {
+                    cell.setContextMenu(null);
+                } else {
+                    cell.setContextMenu(contextMenu);
+                }
+            });
+            return cell;
         });
     }
 
@@ -123,7 +179,7 @@ public class Controller implements Initializable {
         ExecutorService taskExecutor = Executors.newFixedThreadPool(128);
         Set<Future<String>> set = new HashSet<Future<String>>();
 
-        for (int i = 1; i < 255; i++) {
+        for (int i = 1; i < 2; i++) {
             String host = subnet + "." + i;
             Callable<String> callable = new PingThread(host);
             Future<String> future = taskExecutor.submit(callable);
@@ -153,20 +209,20 @@ public class Controller implements Initializable {
 // Console Elements
 
 abstract class ConsoleElement {
-    String message;
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    String message;
     private Date creationTime = new Date();
 
-    String printTime(){
+    String printTime() {
         return sdf.format(creationTime);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "";
     }
 
-    public String toListEntry(){
+    public String toListEntry() {
         return String.format("%s\t%s", printTime(), message);
     }
 }
@@ -175,24 +231,24 @@ class ConsoleResponseElement extends ConsoleElement {
     private Response response;
 
 
-    ConsoleResponseElement(Response response){
+    ConsoleResponseElement(Response response) {
         this.response = response;
     }
 
     @Override
-    public String toListEntry(){
+    public String toListEntry() {
         return String.format("%s\t%s", printTime(), response.toListEntry());
     }
 }
 
 class ConsoleControlElement extends ConsoleElement {
 
-    ConsoleControlElement(String message){
+    ConsoleControlElement(String message) {
         this.message = message;
     }
 
     @Override
-    public String toListEntry(){
+    public String toListEntry() {
         return String.format("%s\t%s", this.printTime(), message);
     }
 }
@@ -200,7 +256,7 @@ class ConsoleControlElement extends ConsoleElement {
 class ConsoleAddressElement extends ConsoleElement {
     private String ipaddress;
 
-    ConsoleAddressElement(String address){
+    ConsoleAddressElement(String address) {
         this.ipaddress = address;
     }
 
