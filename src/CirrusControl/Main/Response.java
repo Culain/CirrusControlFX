@@ -48,10 +48,7 @@ public class Response {
     }
 
     public Response(String rawData) {
-        this.sendCommand = null;
-        this.rawData = rawData;
-        parse(rawData);
-        this.creationTime = new Date();
+        this(rawData, null);
     }
 
     public Response(String rawData, String sendCommand) {
@@ -200,6 +197,9 @@ public class Response {
                 break;
             case "MOD":
                 parseMOD(split_data[1]);
+                break;
+            case "STS":
+                parseSTS(split_data[1]);
                 break;
             case "TIMEOUT":
                 parseTIMEOUT();

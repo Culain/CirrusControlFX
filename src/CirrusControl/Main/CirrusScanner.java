@@ -76,7 +76,7 @@ final class CirrusScanner {
             String responseData = sendData(socketIp, socketPort, command);
             Instant ends = Instant.now();
 
-            Response response = new Response(responseData);
+            Response response = new Response(responseData, command);
             response.setTimeToSend(Duration.between(starts, ends).toMillis());
             return response;
         } catch (IOException e) {

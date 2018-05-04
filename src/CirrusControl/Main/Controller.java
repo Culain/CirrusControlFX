@@ -135,6 +135,7 @@ public class Controller implements Initializable {
         } catch (InterruptedException e) {
             System.out.println(e.toString());
         }
+
         for (Future future : set) {
             try {
                 if (future.get() != null) {
