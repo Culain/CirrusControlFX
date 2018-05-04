@@ -108,14 +108,6 @@ public class Controller implements Initializable {
     }
 
     public void sendCheckCommand(ActionEvent actionEvent) {
-//        System.out.println(String.format("<<< Sending \"%s\" to %s", "STS 0",scanner.ipAddress.getValue()));
-//        responseList.add(new ConsoleControlElement(String.format("<<< Sending \"%s\" to [%s]", "STS 0", scanner.ipAddress.getValue())));
-//
-//        Response response = scanner.sendCommand("STS 0");
-//        if (response.getCommand() == "STS"){
-//            responseList.add(new ConsoleControlElement("Scanner online with IP: %s"));
-//
-//        }
         sendGuiCommand("STS 0");
     }
 
@@ -157,6 +149,8 @@ public class Controller implements Initializable {
     }
 }
 
+// Console Elements
+
 abstract class ConsoleElement {
     String message;
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -182,7 +176,6 @@ class ConsoleResponseElement extends ConsoleElement {
 
     ConsoleResponseElement(Response response){
         this.response = response;
-//        this.creationTime = new Date();
     }
 
     @Override
@@ -221,29 +214,14 @@ class ConsoleAddressElement extends ConsoleElement {
     }
 }
 
-class PingThread /*extends Thread*/ implements Callable<String> {
+// Helperclass for pinging multiple Scanner
+
+class PingThread implements Callable<String> {
     private String host;
 
     PingThread(String ipaddress) {
         this.host = ipaddress;
     }
-//    public void run()
-//    {
-//        try
-//        {
-////            System.out.println("Thread " + currentThread().getId() + " is running");
-//            if (InetAddress.getByName(host).isReachable(1000)) {
-//                System.out.println(host + " is reachable");
-//            }
-////            System.out.println("Thread " + currentThread().getId() + " is finished");
-//        }
-//        catch (Exception e)
-//        {
-//            // Throwing an exception
-//            System.out.println ("Exception is caught");
-//            System.out.println(e);
-//        }
-//    }
 
     @Override
     public String call() {
@@ -269,32 +247,3 @@ class PingThread /*extends Thread*/ implements Callable<String> {
         }
     }
 }
-//
-//class PingCallable implements Callable<Response> {
-//    private CirrusScanner scanner = new CirrusScanner();
-//    private String host;
-//
-//    PingCallable(String host){
-//        this.host = host;
-//    }
-//    @Override
-//    public Response call() /*throws Exception */{
-//        try {
-////            System.out.println("Thread " + currentThread().getId() + " is running");
-//            if (InetAddress.getByName(host).isReachable(1000)) {
-//                CirrusScanner scanner = new CirrusScanner();
-//                scanner.ipAddress.set(host);
-//                Response response = scanner.sendCommand("STS 0");
-//                if (response.getStatus() == 0){
-//                    return host;
-//                }
-//            }
-////            System.out.println("Thread " + currentThread().getId() + " is finished");
-//        } catch (Exception e) {
-//            // Throwing an exception
-//            System.out.println("Exception is caught");
-//            System.out.println(e);
-//        }
-//        return null;
-//    }
-//}
