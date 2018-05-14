@@ -5,6 +5,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
@@ -22,12 +23,20 @@ public class Controller implements Initializable {
     private final CirrusScanner scanner = new CirrusScanner();
     //    public TextArea textArea_Console = new TextArea();
     private final ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
+
+    @FXML
     private ProgressBar progressBarBottom;
+    @FXML
     private TextField TextField_IpAddress;
+    @FXML
     private TextField TextField_SendCommand;
+    @FXML
     private Spinner<Integer> Spinner_Model;
+    @FXML
     private Spinner<Integer> Spinner_Scanner;
+    @FXML
     private ListView<ConsoleElement> guiConsole;
+    @FXML
     private TabPane tabPaneCommands;
 
     @Override
