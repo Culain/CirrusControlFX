@@ -1,13 +1,20 @@
 package CirrusControl.Main;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import org.junit.*;
 
 @SuppressWarnings("ALL")
 public class Response {
@@ -130,15 +137,63 @@ public class Response {
                 "\t\tTime to Receive: %sms", rawData, statusMessage, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
 
+    public static Document loadXMLFromString(String xml) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(xml));
+        return builder.parse(is);
+    }
+
     private void parse(@NotNull String rawData) {
         if (rawData == null || rawData.isEmpty()) throw new IllegalArgumentException();
 
         if (rawData.startsWith("<")) {
-            assert true;    //placeholder for parseXML(rawData);
+            parseXML(rawData);
         } else {
             parseEuler(rawData);
         }
         parseStatusMessage();
+    }
+
+    private void parseXML(String rawData) {
+        try {
+
+//            File fXmlFile = new File(rawData);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = loadXMLFromString(rawData);
+
+
+            //optional, but recommended
+            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+            doc.getDocumentElement().normalize();
+
+            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+
+            NodeList nList = doc.getElementsByTagName("staff");
+
+            System.out.println("----------------------------");
+
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+
+                Node nNode = nList.item(temp);
+
+                System.out.println("\nCurrent Element :" + nNode.getNodeName());
+
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element eElement = (Element) nNode;
+
+                    System.out.println("Staff id : " + eElement.getAttribute("id"));
+                    System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
+                    System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
+                    System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
+                    System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void parseMOD(@NotNull String split_data) {
