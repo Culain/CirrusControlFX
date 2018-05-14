@@ -19,16 +19,16 @@ import java.util.concurrent.*;
 
 public class Controller implements Initializable {
 
-    public ProgressBar progressBarBottom;
-    public TextField TextField_IpAddress;
-    public TextField TextField_SendCommand;
-    public Spinner<Integer> Spinner_Model;
-    public Spinner<Integer> Spinner_Scanner;
-    public ListView<ConsoleElement> guiConsole;
-    public TabPane tabPaneCommands;
-    private CirrusScanner scanner = new CirrusScanner();
+    private final CirrusScanner scanner = new CirrusScanner();
     //    public TextArea textArea_Console = new TextArea();
-    private ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
+    private final ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
+    private ProgressBar progressBarBottom;
+    private TextField TextField_IpAddress;
+    private TextField TextField_SendCommand;
+    private Spinner<Integer> Spinner_Model;
+    private Spinner<Integer> Spinner_Scanner;
+    private ListView<ConsoleElement> guiConsole;
+    private TabPane tabPaneCommands;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -158,13 +158,7 @@ public class Controller implements Initializable {
     }
 
     public void findScannerCommand(ActionEvent actionEvent) {
-//        responseList.add(new ConsoleElement(String.format("v v v Looking for Scanner in Subnet %s.###", scanner.ipAddress.getValue().substring(0, scanner.ipAddress.getValue().lastIndexOf('.')))));
-
         new Thread(this::findScannerCommandAction).start();
-
-//        findScannerCommandAction();
-//        DEBUG_findScannerCommandAction();
-//        responseList.add(new ConsoleElement("^^^ Done"));
     }
 
     private void findScannerCommandAction() {
@@ -211,48 +205,6 @@ public class Controller implements Initializable {
         Platform.runLater(() -> tabPaneCommands.setDisable(false));
         Platform.runLater(() -> responseList.add(new ConsoleElement("^^^ Done")));
     }
-
-/*    private void DEBUG_findScannerCommandAction() {
-        tabPaneCommands.setDisable(true);
-
-
-        String tempVal = scanner.ipAddress.getValue();
-        String subnet = scanner.ipAddress.getValue().substring(0, scanner.ipAddress.getValue().lastIndexOf('.'));
-
-        List<String> addresslist = null;
-
-        for (int i = 1; i < 2; i++) {
-            try {
-                String host = subnet + "." + i;
-                if (InetAddress.getByName(host).isReachable(1000)) {
-                    System.out.println(host + " is pingable");
-                    CirrusScanner scanner = new CirrusScanner();
-                    scanner.ipAddress.set(host);
-                    Response response = scanner.sendCommand("STS 0");
-                    if (response.getStatus() == 0) {
-                        addresslist.add(host);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        for (String address : addresslist) {
-            try {
-                if (address != null) {
-//                    responseList.add(new ConsoleElement((String) future.get()));
-                    responseList.add(new ConsoleElement(ConsoleElement.elementType.address , address));
-                }
-            } catch (Exception e) {
-                System.out.println(e.toString());
-            }
-        }
-        scanner.ipAddress.set(tempVal);
-
-
-        tabPaneCommands.setDisable(false);
-    }*/
 }
 
 
@@ -261,7 +213,7 @@ class ConsoleElement {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private String message;
     private elementType type = elementType.standard;
-    private Date creationTime = new Date();
+    private final Date creationTime = new Date();
     private Response response;
     private String ipaddress;
 
@@ -312,12 +264,12 @@ class ConsoleElement {
     }
 }
 
-// Helperclass for pinging multiple Scanner
+// Helper class for pinging multiple Scanner
 class PingThread implements Callable<String> {
-    private String host;
+    private final String host;
 
-    PingThread(String ipaddress) {
-        this.host = ipaddress;
+    PingThread(String ipAddress) {
+        this.host = ipAddress;
     }
 
     @Override
@@ -344,18 +296,3 @@ class PingThread implements Callable<String> {
         }
     }
 }
-
-//
-//class safeObservableArrayList extends SimpleListProperty
-//    {
-//        //constructor
-//        safeObservableArrayList(){
-//            super(FXCollections.observableArrayList());
-//        }
-//
-//        public void add(int i, E element)
-//        {
-//            this.add(element);
-//        }
-//
-//    }

@@ -16,42 +16,14 @@ final class CirrusScanner {
 
     private int multiCommandServer = 0;
     private int port = 20001;
-//    private String ipAddress = "127.0.0.1";
-SimpleStringProperty ipAddress = new SimpleStringProperty("172.30.1.14");
+
+    SimpleStringProperty ipAddress = new SimpleStringProperty("172.30.1.14");
     SimpleIntegerProperty selectedModel = new SimpleIntegerProperty(1);
     SimpleIntegerProperty selectedScanner = new SimpleIntegerProperty(0);
-
 
     CirrusScanner() {
         assert true;
     }
-
-
-
-//    String getIpAddress() { return ipAddress.getValue();}
-//
-//    void setIpAddress(String value){
-//        try {
-//            InetAddress.getByName(value);  //only try to parse. ignore value
-//            ipAddress.set(value);
-//        } catch (UnknownHostException e) {
-//            //ignore
-//        }
-//    }
-
-//    String getIpAddress() {
-//        return this.ipAddress;
-//    }
-
-//    void setIpAddress(String value) {
-//        try {
-//            InetAddress.getByName(value);  //only try to parse. ignore value
-//            this.ipAddress = value;
-//        } catch (UnknownHostException e) {
-//            //ignore
-//        }
-//    }
-
 
     /* REGEX FOR IP-ADDRESSES
     \A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}
