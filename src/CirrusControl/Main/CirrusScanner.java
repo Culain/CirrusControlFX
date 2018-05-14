@@ -17,7 +17,7 @@ final class CirrusScanner {
     private int multiCommandServer = 0;
     private int port = 20001;
 
-    SimpleStringProperty ipAddress = new SimpleStringProperty("172.30.1.14");
+    SimpleStringProperty ipAddress = new SimpleStringProperty("10.101.10.31");
     SimpleIntegerProperty selectedModel = new SimpleIntegerProperty(1);
     SimpleIntegerProperty selectedScanner = new SimpleIntegerProperty(0);
 
