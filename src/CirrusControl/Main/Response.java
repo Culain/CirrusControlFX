@@ -1,5 +1,6 @@
 package CirrusControl.Main;
 
+import jdk.jshell.spi.ExecutionControl;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -147,15 +148,19 @@ public class Response {
     private void parse(@NotNull String rawData) {
         if (rawData == null || rawData.isEmpty()) throw new IllegalArgumentException();
 
-        if (rawData.startsWith("<")) {
-            parseXML(rawData);
-        } else {
-            parseEuler(rawData);
+        try {
+            if (rawData.startsWith("<")) {
+                parseXML(rawData);
+            } else {
+                parseEuler(rawData);
+            }
+            parseStatusMessage();
+        } catch (ExecutionControl.NotImplementedException e) {
+            e.printStackTrace();
         }
-        parseStatusMessage();
     }
 
-    private void parseXML(String rawData) {
+    private void parseXML(String rawData) throws ExecutionControl.NotImplementedException {
         try {
 
 //            File fXmlFile = new File(rawData);
@@ -193,6 +198,7 @@ public class Response {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ExecutionControl.NotImplementedException("lolno");
         }
     }
 

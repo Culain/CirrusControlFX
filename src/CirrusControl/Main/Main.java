@@ -6,18 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.net.InetAddress;
-
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
-        // Testbereich
-//        CirrusScanner scanner = new CirrusScanner();
-
-//        scanner.setIpAddress("127.0.0.1");
-//        scanner.sendCommand("LOCG 1");
-        // Testbereich ende
-
         Parent root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
         primaryStage.setTitle("CirrusControl by Visio Nerf GmbH");
         primaryStage.setScene(new Scene(root));  //old: Scene(root,600,800)
