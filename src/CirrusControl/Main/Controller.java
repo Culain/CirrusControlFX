@@ -79,16 +79,23 @@ public class Controller implements Initializable {
 
             ContextMenu contextMenu = new ContextMenu();
 
-            MenuItem deleteItem = new MenuItem();
-            deleteItem.textProperty().bind(Bindings.format("Delete Item"));
-            deleteItem.setOnAction(event -> guiConsole.getItems().remove(cell.getItem()));
-            contextMenu.getItems().add(deleteItem);
-
             //TODO: add (set address) context menu item only for address cells
             MenuItem setAddress = new MenuItem();
             setAddress.textProperty().bind(Bindings.format("Set IP Address"));
             setAddress.setOnAction(event -> scanner.setIp(cell.getItem().getip()));
             contextMenu.getItems().add(setAddress);
+
+            MenuItem deleteItem = new MenuItem();
+            deleteItem.textProperty().bind(Bindings.format("Delete Item"));
+            deleteItem.setOnAction(event -> guiConsole.getItems().remove(cell.getItem()));
+            contextMenu.getItems().add(deleteItem);
+
+            MenuItem deleteAllItems = new MenuItem();
+            deleteAllItems.textProperty().bind(Bindings.format("Delete All Item"));
+            deleteAllItems.setOnAction(event -> guiConsole.getItems().clear());
+            contextMenu.getItems().add(deleteAllItems);
+
+
 
             cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
@@ -111,7 +118,8 @@ public class Controller implements Initializable {
         if (output) {
             System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
             Platform.runLater(() -> {
-                responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
+//                responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
+                responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue()));
             });
         }
         Response response = scanner.sendCommand(command);
@@ -208,14 +216,15 @@ class ConsoleElement {
     private final Date creationTime = new Date();
     private Response response;
     private String ipaddress;
+    private Object command;
 
     ConsoleElement(String message) {
         this.message = message;
     }
 
     ConsoleElement(Response response) {
-        this.response = response;
         this.type = elementType.response;
+        this.response = response;
     }
 
     ConsoleElement(elementType type, String address) {
@@ -224,6 +233,14 @@ class ConsoleElement {
             this.ipaddress = address;
         } else {
             this.message = address;
+        }
+    }
+
+    ConsoleElement(elementType type, String command, String address) {
+        this.type = type;
+        if (type == elementType.sendMessage) {
+            this.command = command;
+            this.ipaddress = address;
         }
     }
 
@@ -249,6 +266,8 @@ class ConsoleElement {
                 return String.format("%s\t%s", printTime(), response.toListEntry());
             case address:
                 return String.format("%s\tScanner online at [%s]", printTime(), this.ipaddress);
+            case sendMessage:
+                return String.format("%s\t<<< Sending \"%s\" to [%s]", printTime(), this.command, this.ipaddress);
         }
         throw new NullPointerException("what");
     }
@@ -258,7 +277,7 @@ class ConsoleElement {
     }
 
     public enum elementType {
-        standard, response, address, control
+        standard, response, address, control, sendMessage
     }
 }
 
