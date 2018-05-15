@@ -68,7 +68,7 @@ public class Controller implements Initializable {
                 protected void updateItem(ConsoleElement item, boolean empty) {
                     super.updateItem(item, empty);
 
-                    if (empty || item == null || item.toString() == null) {
+                    if (empty || item == null || item.toString() == null || item.toListEntry() == null) {
                         setText(null);
                         setGraphic(null);
                     } else {
@@ -79,37 +79,16 @@ public class Controller implements Initializable {
 
             ContextMenu contextMenu = new ContextMenu();
 
-//            MenuItem editItem = new MenuItem();
-//            editItem.textProperty().bind(Bindings.format("Edit \"%s\"", cell.itemProperty()));
-//            editItem.setOnAction(event -> {
-//                String item = cell.getItem();
-//                // code to edit item...
-//            });
             MenuItem deleteItem = new MenuItem();
             deleteItem.textProperty().bind(Bindings.format("Delete Item"));
             deleteItem.setOnAction(event -> guiConsole.getItems().remove(cell.getItem()));
             contextMenu.getItems().add(deleteItem);
 
             //TODO: add (set address) context menu item only for address cells
-
-
-//            try {
-//                if (cell.getItem().type == ConsoleElement.elementType.address) {
-//                    MenuItem setAddress = new MenuItem();
-//                    setAddress.textProperty().bind(Bindings.format("set Address"));
-//                    setAddress.setOnAction(event -> scanner.ipAddress.setValue(cell.getItem().toString()));
-//                    contextMenu.getItems().add(setAddress);
-//                }
-//            } catch (Exception e) {
-//                System.out.println(e);
-//            }
-
-//            if (thisElement.type == ConsoleElement.elementType.address) {
-//                MenuItem setAddress = new MenuItem();
-//                setAddress.textProperty().bind(Bindings.format("set Address"));
-//                setAddress.setOnAction(event -> scanner.ipAddress.setValue(cell.getItem().toString()));
-//                contextMenu.getItems().add(setAddress);
-//            }
+            MenuItem setAddress = new MenuItem();
+            setAddress.textProperty().bind(Bindings.format("Set IP Address"));
+            setAddress.setOnAction(event -> scanner.setIp(cell.getItem().getip()));
+            contextMenu.getItems().add(setAddress);
 
             cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
@@ -131,13 +110,17 @@ public class Controller implements Initializable {
     private void sendGuiCommand(String command, boolean output) {
         if (output) {
             System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
-            responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
+            Platform.runLater(() -> {
+                responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
+            });
         }
         Response response = scanner.sendCommand(command);
 
         if (output) {
             System.out.println(String.format(">>> %s", response.toString()));
-            responseList.add(new ConsoleElement(response));
+            Platform.runLater(() -> {
+                responseList.add(new ConsoleElement(response));
+            });
         }
         guiConsole.scrollTo(responseList.size() - 1);     //Scroll to last Entry
     }
@@ -235,11 +218,12 @@ class ConsoleElement {
         this.type = elementType.response;
     }
 
-    ConsoleElement(elementType type, String string) {
+    ConsoleElement(elementType type, String address) {
+        this.type = type;
         if (type == elementType.address) {
-            this.ipaddress = string;
+            this.ipaddress = address;
         } else {
-            this.message = string;
+            this.message = address;
         }
     }
 
@@ -255,17 +239,22 @@ class ConsoleElement {
         return "";
     }
 
-    String toListEntry() {
-        switch (type) {
+    public String toListEntry() {
+        switch (this.type) {
             case standard:
+                return String.format("%s\t%s", printTime(), message);
             case control:
                 return String.format("%s\t%s", printTime(), message);
             case response:
                 return String.format("%s\t%s", printTime(), response.toListEntry());
             case address:
-                return String.format("Scanner [%s] is online", this.ipaddress);
+                return String.format("%s\tScanner online at [%s]", printTime(), this.ipaddress);
         }
-        return null;
+        throw new NullPointerException("what");
+    }
+
+    public String getip() {
+        return this.ipaddress;
     }
 
     public enum elementType {

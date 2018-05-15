@@ -77,4 +77,8 @@ final class CirrusScanner {
         socket.close();
         return stringbuilder.toString();
     }
+
+    public void setIp(String getip) {
+        ipAddress.setValue(getip);
+    }
 }
