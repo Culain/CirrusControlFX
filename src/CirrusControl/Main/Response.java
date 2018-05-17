@@ -20,6 +20,8 @@ import java.util.HashMap;
 @SuppressWarnings("ALL")
 public class Response {
 
+    public int port;
+    public String ipaddress;
     private String rawData;
     private String sendCommand;  //Command that was send to the Scanner
     private String command;      //Command that was received from the Scanner
@@ -33,6 +35,9 @@ public class Response {
     private int licenseTime;
     private int timeToSend;     //milliseconds
     private Date creationTime;
+    Position pos;
+    private int Locg_IndexConfigID;
+    private int locg_ConfigID;
 
 
     public Response() {
@@ -221,7 +226,29 @@ public class Response {
                 configID[i] = Integer.parseInt(parameters[4 + i]);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-           System.out.println("ERROR: " + e);
+            e.printStackTrace();
+        }
+    }
+
+    private void parseLOCG(String split_data) {
+        String[] parameters = split_data.split(",");
+        try {
+            status = Integer.parseInt(parameters[0]);
+            if (status != 0) {
+                return;
+            }
+            Locg_IndexConfigID = Integer.parseInt(parameters[1]);
+            locg_ConfigID = Integer.parseInt(parameters[2]);
+            stdv = Float.parseFloat(parameters[2]);
+            this.pos = new Position();
+            pos.X = Float.parseFloat(parameters[3]);
+            pos.Y = Float.parseFloat(parameters[4]);
+            pos.Z = Float.parseFloat(parameters[5]);
+            pos.W = Float.parseFloat(parameters[6]);
+            pos.P = Float.parseFloat(parameters[7]);
+            pos.R = Float.parseFloat(parameters[8]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
     }
 
@@ -237,6 +264,16 @@ public class Response {
             licenseTime = Integer.parseInt(split_data);
             status = 0;
         }
+    }
+
+    private void parseCALC(@NotNull String split_data) {
+        String[] parameters = split_data.split(",");
+        status = Integer.parseInt(parameters[0]);
+    }
+
+    private void parseCALP(@NotNull String split_data) {
+        String[] parameters = split_data.split(",");
+        status = Integer.parseInt(parameters[0]);
     }
 
     private void parseStatusMessage() {
@@ -257,11 +294,20 @@ public class Response {
             case "LOCN":
                 parseLOCN(split_data[1]);
                 break;
+            case "LOCG":
+                parseLOCG(split_data[1]);
+                break;
             case "MOD":
                 parseMOD(split_data[1]);
                 break;
             case "STS":
                 parseSTS(split_data[1]);
+                break;
+            case "CALP":
+                parseCALP(split_data[1]);
+                break;
+            case "CALC":
+                parseCALC(split_data[1]);
                 break;
             case "TIMEOUT":
                 parseTIMEOUT();
@@ -273,5 +319,9 @@ public class Response {
     private void parseTIMEOUT() {
         statusMessage = "Timeout during Connection";
         status = -30;
+    }
+
+    class Position {
+        public float X, Y, Z, W, P, R = 0;
     }
 }

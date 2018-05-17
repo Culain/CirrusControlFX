@@ -35,7 +35,7 @@ final class CirrusScanner {
         return sendCommand(command, 0);
     }
 
-    private Response sendCommand(String command, int Master) {
+    public Response sendCommand(String command, int Master) {
         String socketIp = ipAddress.getValue();
         int socketPort = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
 
@@ -50,6 +50,8 @@ final class CirrusScanner {
 
             Response response = new Response(responseData, command);
             response.setTimeToSend(Duration.between(starts, ends).toMillis());
+            response.port = socketPort;
+            response.ipaddress = socketIp;
             return response;
         } catch (IOException e) {
             e.printStackTrace();

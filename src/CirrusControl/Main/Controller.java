@@ -116,13 +116,13 @@ public class Controller implements Initializable {
 
     private void sendGuiCommand(String command, boolean output) {
         if (output) {
-            System.out.println(String.format("<<< Sending %s to %s", command, scanner.ipAddress.getValue()));
+            System.out.println(String.format("<<< Sending %s to %s:%d", command, scanner.ipAddress.getValue(), 20001 + Spinner_Scanner.getValue()));
             Platform.runLater(() -> {
-//                responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s]", command, scanner.ipAddress.getValue())));
-                responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue()));
+//                responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s:%d]", command, scanner.ipAddress.getValue()
+                responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue(), Spinner_Scanner.getValue()));
             });
         }
-        Response response = scanner.sendCommand(command);
+        Response response = scanner.sendCommand(command, Spinner_Scanner.getValue());
 
         if (output) {
             System.out.println(String.format(">>> %s", response.toString()));
@@ -211,6 +211,7 @@ public class Controller implements Initializable {
 // Console Elements
 class ConsoleElement {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private int port = 20001;
     private String message;
     private elementType type = elementType.standard;
     private final Date creationTime = new Date();
@@ -237,10 +238,20 @@ class ConsoleElement {
     }
 
     ConsoleElement(elementType type, String command, String address) {
+//        this.type = type;
+//        if (type == elementType.sendMessage) {
+//            this.command = command;
+//            this.ipaddress = address;
+//        }
+        this(type, command, address, 20001);
+    }
+
+    ConsoleElement(elementType type, String command, String address, int Master) {
         this.type = type;
         if (type == elementType.sendMessage) {
             this.command = command;
             this.ipaddress = address;
+            this.port = 20001 + Master;
         }
     }
 
@@ -267,7 +278,7 @@ class ConsoleElement {
             case address:
                 return String.format("%s\tScanner online at [%s]", printTime(), this.ipaddress);
             case sendMessage:
-                return String.format("%s\t<<< Sending \"%s\" to [%s]", printTime(), this.command, this.ipaddress);
+                return String.format("%s\t<<< Sending \"%s\" to [%s:%d]", printTime(), this.command, this.ipaddress, this.port);
         }
         throw new NullPointerException("what");
     }
