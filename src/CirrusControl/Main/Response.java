@@ -35,9 +35,12 @@ public class Response {
     private int licenseTime;
     private int timeToSend;     //milliseconds
     private Date creationTime;
-    Position pos;
+    private Position pos;
     private int Locg_IndexConfigID;
     private int locg_ConfigID;
+    private Offset offset;
+    private int Loco_IndexConfigID;
+    private int loco_ConfigID;
 
 
     public Response() {
@@ -239,7 +242,6 @@ public class Response {
             }
             Locg_IndexConfigID = Integer.parseInt(parameters[1]);
             locg_ConfigID = Integer.parseInt(parameters[2]);
-            stdv = Float.parseFloat(parameters[2]);
             this.pos = new Position();
             pos.X = Float.parseFloat(parameters[3]);
             pos.Y = Float.parseFloat(parameters[4]);
@@ -247,6 +249,27 @@ public class Response {
             pos.W = Float.parseFloat(parameters[6]);
             pos.P = Float.parseFloat(parameters[7]);
             pos.R = Float.parseFloat(parameters[8]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseLOCO(String split_data) {
+        String[] parameters = split_data.split(",");
+        try {
+            status = Integer.parseInt(parameters[0]);
+            if (status != 0) {
+                return;
+            }
+            Loco_IndexConfigID = Integer.parseInt(parameters[1]);
+            loco_ConfigID = Integer.parseInt(parameters[2]);
+            this.offset = new Offset();
+            offset.X = Float.parseFloat(parameters[3]);
+            offset.Y = Float.parseFloat(parameters[4]);
+            offset.Z = Float.parseFloat(parameters[5]);
+            offset.W = Float.parseFloat(parameters[6]);
+            offset.P = Float.parseFloat(parameters[7]);
+            offset.R = Float.parseFloat(parameters[8]);
         } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -322,6 +345,10 @@ public class Response {
     }
 
     class Position {
+        public float X, Y, Z, W, P, R = 0;
+    }
+
+    class Offset /*extends Position*/ {
         public float X, Y, Z, W, P, R = 0;
     }
 }
