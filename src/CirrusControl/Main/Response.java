@@ -47,9 +47,16 @@ public class Response {
         this("ERR", null);
     }
 
-    public int getStatus(){
-        return status;
-    }
+    private ArrayList<String> commandList = new ArrayList<>() {{
+        add("STS ");
+        add("MOD ");
+        add("LOC ");
+        add("LOCN ");
+        add("LOCG ");
+        add("LOCO ");
+        add("CALP ");
+        add("CALC ");
+    }};
 
     public String getCommand() {
         return command;
@@ -76,21 +83,14 @@ public class Response {
 
     private String statusMessage;
 
-    public String toString(){
+    public int getStatus() {
+        return status;
+    }
+
+    public String toString() {
         return String.format("Received: %s\n" +
                 "Time to Receive: %sms", rawData, NumberFormat.getNumberInstance().format(this.timeToSend));
     }
-
-    private ArrayList<String> commandList = new ArrayList<>() {{
-        add("STS");
-        add("MOD");
-        add("LOC");
-        add("LOCN ");
-        add("LOCG ");
-        add("LOCO ");
-        add("CALP ");
-        add("CALC");
-    }};
 
     HashMap<Integer, String> statusList = new HashMap<Integer, String>() {{
         put(-30, "Connection Timeout");
@@ -243,13 +243,14 @@ public class Response {
             }
             Locg_IndexConfigID = Integer.parseInt(parameters[1]);
             locg_ConfigID = Integer.parseInt(parameters[2]);
-            this.pos = new Position();
-            pos.X = Float.parseFloat(parameters[3]);
-            pos.Y = Float.parseFloat(parameters[4]);
-            pos.Z = Float.parseFloat(parameters[5]);
-            pos.W = Float.parseFloat(parameters[6]);
-            pos.P = Float.parseFloat(parameters[7]);
-            pos.R = Float.parseFloat(parameters[8]);
+            this.pos = new Position(
+                    Float.parseFloat(parameters[3]),
+                    Float.parseFloat(parameters[4]),
+                    Float.parseFloat(parameters[5]),
+                    Float.parseFloat(parameters[6]),
+                    Float.parseFloat(parameters[7]),
+                    Float.parseFloat(parameters[8])
+            );
         } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -264,13 +265,14 @@ public class Response {
             }
             Loco_IndexConfigID = Integer.parseInt(parameters[1]);
             loco_ConfigID = Integer.parseInt(parameters[2]);
-            this.offset = new Offset();
-            offset.X = Float.parseFloat(parameters[3]);
-            offset.Y = Float.parseFloat(parameters[4]);
-            offset.Z = Float.parseFloat(parameters[5]);
-            offset.W = Float.parseFloat(parameters[6]);
-            offset.P = Float.parseFloat(parameters[7]);
-            offset.R = Float.parseFloat(parameters[8]);
+            this.offset = new Offset(
+                    Float.parseFloat(parameters[3]),
+                    Float.parseFloat(parameters[4]),
+                    Float.parseFloat(parameters[5]),
+                    Float.parseFloat(parameters[6]),
+                    Float.parseFloat(parameters[7]),
+                    Float.parseFloat(parameters[8])
+            );
         } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -346,13 +348,5 @@ public class Response {
     private void parseTIMEOUT() {
         statusMessage = "Timeout during Connection";
         status = -30;
-    }
-
-    class Position {
-        public float X, Y, Z, W, P, R = 0;
-    }
-
-    class Offset /*extends Position*/ {
-        public float X, Y, Z, W, P, R = 0;
     }
 }
