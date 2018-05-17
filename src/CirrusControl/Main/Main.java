@@ -9,6 +9,12 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Position pos = new Position(100, 200, 300, -120, -180, -600);
+        System.out.println(pos.toString());
+        Offset offset = new Offset(11, 2222, 333, -120, -180, -300);
+        pos.add(offset);
+        System.out.println(pos.toString());
+
         Parent root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
         primaryStage.setTitle("CirrusControl by Visio Nerf GmbH");
         primaryStage.setScene(new Scene(root));  //old: Scene(root,600,800)

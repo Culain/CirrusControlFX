@@ -142,9 +142,24 @@ public class Response {
     }
 
     public String toListEntry() {
-        return String.format(">>> Received: \"%s\"\n" +
-                "\t\tStatus:\t%s\n" +
-                "\t\tTime to Receive: %sms", rawData, statusMessage, NumberFormat.getNumberInstance().format(this.timeToSend));
+        switch (this.command) {
+            case "LOCG":
+                return String.format(">>> Received: \"%s\"\n" +
+                        "\t\tStatus:\t%s\n" +
+                        "\t\tCoordinates:\n" +
+                        "%s\n" +
+                        "\t\tTime to Receive: %sms", rawData, statusMessage, pos.toListEntry(), NumberFormat.getNumberInstance().format(this.timeToSend));
+            case "LOCO":
+                return String.format(">>> Received: \"%s\"\n" +
+                        "\t\tStatus:\t%s\n" +
+                        "\t\tOffset:\n" +
+                        "%s\n" +
+                        "\t\tTime to Receive: %sms", rawData, statusMessage, offset.toListEntry(), NumberFormat.getNumberInstance().format(this.timeToSend));
+            default:
+                return String.format(">>> Received: \"%s\"\n" +
+                        "\t\tStatus:\t%s\n" +
+                        "\t\tTime to Receive: %sms", rawData, statusMessage, NumberFormat.getNumberInstance().format(this.timeToSend));
+        }
     }
 
     public static Document loadXMLFromString(String xml) throws Exception {
