@@ -87,6 +87,7 @@ public class Response {
         add("LOC");
         add("LOCN ");
         add("LOCG ");
+        add("LOCO ");
         add("CALP ");
         add("CALC");
     }};
@@ -319,6 +320,9 @@ public class Response {
                 break;
             case "LOCG":
                 parseLOCG(split_data[1]);
+                break;
+            case "LOCO":
+                parseLOCO(split_data[1]);
                 break;
             case "MOD":
                 parseMOD(split_data[1]);
