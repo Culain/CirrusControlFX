@@ -17,7 +17,7 @@ final class CirrusScanner {
     private int multiCommandServer = 0;
     private int port = 20001;
 
-    SimpleStringProperty ipAddress = new SimpleStringProperty("172.30.1.14");
+    SimpleStringProperty ipAddress = new SimpleStringProperty("127.0.0.1");
     SimpleIntegerProperty selectedModel = new SimpleIntegerProperty(1);
     SimpleIntegerProperty selectedScanner = new SimpleIntegerProperty(0);
 
@@ -35,7 +35,7 @@ final class CirrusScanner {
         return sendCommand(command, 0);
     }
 
-    public Response sendCommand(String command, int Master) {
+    Response sendCommand(String command, int Master) {
         String socketIp = ipAddress.getValue();
         int socketPort = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
 
@@ -80,7 +80,7 @@ final class CirrusScanner {
         return stringbuilder.toString();
     }
 
-    public void setIp(String value) {
+    void setIp(String value) {
         ipAddress.setValue(value);
     }
 }

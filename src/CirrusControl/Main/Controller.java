@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -56,9 +57,17 @@ public class Controller implements Initializable {
         guiConsole.setItems(responseList);
 
         //Tooltips
-        TextField_IpAddress.setTooltip(new Tooltip("Select Scanner IP Address"));
+//        TextField_IpAddress.setTooltip(new Tooltip ("Select Scanner IP Address"));  //will be set with ip address (see below)
         Spinner_Scanner.setTooltip(new Tooltip("0=Master, 1-9=Slave"));
         Spinner_Model.setTooltip(new Tooltip("Select Model Number"));
+
+        //Set own IP address
+        try {
+            scanner.setIp(InetAddress.getLocalHost().getHostAddress());
+            TextField_IpAddress.setTooltip(new Tooltip("Computer IP: " + InetAddress.getLocalHost().getHostAddress()));
+        } catch (UnknownHostException e) {
+            scanner.setIp("127.0.0.1");
+        }
 
         //CellFactory for listView
         guiConsole.setCellFactory(lv -> {
@@ -106,6 +115,7 @@ public class Controller implements Initializable {
             });
             return cell;
         });
+
     }
 
     //Events
@@ -126,9 +136,7 @@ public class Controller implements Initializable {
 
         if (output) {
             System.out.println(String.format(">>> %s", response.toString()));
-            Platform.runLater(() -> {
-                responseList.add(new ConsoleElement(response));
-            });
+            Platform.runLater(() -> responseList.add(new ConsoleElement(response)));
         }
         guiConsole.scrollTo(responseList.size() - 1);     //Scroll to last Entry
     }
@@ -267,7 +275,7 @@ class ConsoleElement {
         return "";
     }
 
-    public String toListEntry() {
+    String toListEntry() {
         switch (this.type) {
             case standard:
                 return String.format("%s\t%s", printTime(), message);
@@ -283,7 +291,7 @@ class ConsoleElement {
         throw new NullPointerException("what");
     }
 
-    public String getip() {
+    String getip() {
         return this.ipaddress;
     }
 
