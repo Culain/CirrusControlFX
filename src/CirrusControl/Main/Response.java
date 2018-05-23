@@ -3,6 +3,7 @@ package CirrusControl.Main;
 import jdk.jshell.spi.ExecutionControl;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -13,6 +14,7 @@ import java.io.StringReader;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -347,7 +349,11 @@ public class Response {
             for (int i = 2; i < nodeList.getLength(); i++) {
                 node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    eulerString.append(node.getTextContent());
+                    if (node.getNodeName().startsWith("VN_Frame")) {  //Kuka Frame has to be handled differently
+                        eulerString.append(parseXMLFrame(node));
+                    } else {
+                        eulerString.append(node.getTextContent());
+                    }
                     if (i != nodeList.getLength() - 1) {
                         eulerString.append(",");
                     }
@@ -361,6 +367,31 @@ public class Response {
             e.printStackTrace();
             throw new ExecutionControl.NotImplementedException("Error in parseXML");
         }
+    }
+
+    private String parseXMLFrame(Node node) {
+        System.out.println(node.getAttributes().getLength());
+
+        NamedNodeMap nodeList = node.getAttributes();
+        ArrayList<String> frame = new ArrayList<>();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            System.out.println(nodeList.item(i).getTextContent());
+            frame.add(nodeList.item(i).getTextContent());
+        }
+
+        for (int i = 0; i < 3; i++) {              //A,B,C,X,Y,Z -> X,Y,Z,A,B,C
+            Collections.swap(frame, i, i + 3);
+        }
+        Collections.swap(frame, 3, 5);      //convert KUKA ABC -> Euler WPR
+
+        StringBuilder returnString = new StringBuilder();
+        for (int i = 0; i < frame.size(); i++) {
+            returnString.append(frame.get(i));
+            if (i < frame.size() - 1) {
+                returnString.append(",");
+            }
+        }
+        return returnString.toString();
     }
 
 }

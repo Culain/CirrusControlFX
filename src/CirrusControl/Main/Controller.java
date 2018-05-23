@@ -125,20 +125,22 @@ public class Controller implements Initializable {
     }
 
     private void sendGuiCommand(String command, boolean output) {
-        if (output) {
-            System.out.println(String.format("<<< Sending %s to %s:%d", command, scanner.ipAddress.getValue(), 20001 + Spinner_Scanner.getValue()));
-            Platform.runLater(() -> {
-//                responseList.add(new ConsoleElement(String.format("<<< Sending \"%s\" to [%s:%d]", command, scanner.ipAddress.getValue()
-                responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue(), Spinner_Scanner.getValue()));
-            });
-        }
-        Response response = scanner.sendCommand(command, Spinner_Scanner.getValue());
+        new Thread(() -> {
+            Platform.runLater(() -> tabPaneCommands.setDisable(true));
+            if (output) {
+                Platform.runLater(() -> responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue(), Spinner_Scanner.getValue())));
+                System.out.println(String.format("<<< Sending %s to %s:%d", command, scanner.ipAddress.getValue(), 20001 + Spinner_Scanner.getValue()));
+            }
 
-        if (output) {
-            System.out.println(String.format(">>> %s", response.toString()));
-            Platform.runLater(() -> responseList.add(new ConsoleElement(response)));
-        }
-        guiConsole.scrollTo(responseList.size() - 1);     //Scroll to last Entry
+            Response response = scanner.sendCommand(command, Spinner_Scanner.getValue());
+
+            if (output) {
+                Platform.runLater(() -> responseList.add(new ConsoleElement(response)));
+                System.out.println(String.format(">>> %s", response.toString()));
+            }
+            Platform.runLater(() -> guiConsole.scrollTo(responseList.size() - 1));    //Scroll to last Entry
+            Platform.runLater(() -> tabPaneCommands.setDisable(false));
+        }).start();
     }
 
     public void sendModCommand(ActionEvent actionEvent) {
