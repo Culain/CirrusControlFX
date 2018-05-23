@@ -369,13 +369,11 @@ public class Response {
         }
     }
 
+    @NotNull
     private String parseXMLFrame(Node node) {
-        System.out.println(node.getAttributes().getLength());
-
         NamedNodeMap nodeList = node.getAttributes();
         ArrayList<String> frame = new ArrayList<>();
         for (int i = 0; i < nodeList.getLength(); i++) {
-            System.out.println(nodeList.item(i).getTextContent());
             frame.add(nodeList.item(i).getTextContent());
         }
 
@@ -393,5 +391,4 @@ public class Response {
         }
         return returnString.toString();
     }
-
 }
