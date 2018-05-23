@@ -71,7 +71,10 @@
                                           </Spinner>
                                        </children>
                                     </HBox>
-                                    <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#sendCheckCommand" text="Check Scanner" GridPane.columnIndex="2" GridPane.rowSpan="2">
+                                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                             mnemonicParsing="false" onAction="#sendCheckCommand"
+                                             text="[STS 0]&#10;Check Scanner" textAlignment="CENTER"
+                                             GridPane.columnIndex="2" GridPane.rowSpan="2">
                                         <GridPane.margin>
                                           <Insets bottom="2.0" left="5.0" right="5.0" top="3.0" />
                                        </GridPane.margin>
@@ -180,7 +183,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Separator>
-            <Label text="v 0.1">
+             <Label text="v 0.2">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>

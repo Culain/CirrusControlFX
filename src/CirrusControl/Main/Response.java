@@ -3,7 +3,6 @@ package CirrusControl.Main;
 import jdk.jshell.spi.ExecutionControl;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -94,6 +93,7 @@ public class Response {
 
     HashMap<Integer, String> statusList = new HashMap<Integer, String>() {{
         put(-30, "Connection Timeout");
+        put(-21, "CirrusControlFX: Error parsing XML");
         put(-20, "CirrusControlFX: No Status Message found");
         put(-10, "CirrusControlFX: Error Message from Scanner");
         put(-2, "RPL3D command failed (Not ok)");
@@ -162,13 +162,6 @@ public class Response {
         }
     }
 
-    public static Document loadXMLFromString(String xml) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        InputSource is = new InputSource(new StringReader(xml));
-        return builder.parse(is);
-    }
-
     private void parse(@NotNull String rawData) {
         if (rawData == null || rawData.isEmpty()) throw new IllegalArgumentException();
 
@@ -181,48 +174,6 @@ public class Response {
             parseStatusMessage();
         } catch (ExecutionControl.NotImplementedException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void parseXML(String rawData) throws ExecutionControl.NotImplementedException {
-        try {
-
-//            File fXmlFile = new File(rawData);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = loadXMLFromString(rawData);
-
-
-            //optional, but recommended
-            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-            doc.getDocumentElement().normalize();
-
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-
-            NodeList nList = doc.getElementsByTagName("staff");
-
-            System.out.println("----------------------------");
-
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-
-                Node nNode = nList.item(temp);
-
-                System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                    Element eElement = (Element) nNode;
-
-                    System.out.println("Staff id : " + eElement.getAttribute("id"));
-                    System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-                    System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-                    System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-                    System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExecutionControl.NotImplementedException("lolno");
         }
     }
 
@@ -360,8 +311,56 @@ public class Response {
         }
     }
 
+    private static Document loadXMLFromString(String xml) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(xml));
+        Document document = builder.parse(is);
+        document.getDocumentElement().normalize();
+        return document;
+    }
+
+    // XML Parser
+
+    private static String trimXML(String xml) {
+        String temp = xml;
+        temp = temp.replace("</COM_VN><COM_VN>", "");
+        temp = temp.replace("</COM_VN> <COM_VN>", "");
+        return temp;
+    }
+
     private void parseTIMEOUT() {
         statusMessage = "Timeout during Connection";
         status = -30;
     }
+
+    private void parseXML(String rawData) throws ExecutionControl.NotImplementedException {
+        try {
+            Document doc = loadXMLFromString(trimXML(rawData));
+            NodeList nodeList = doc.getElementsByTagName("*");
+            Node node = nodeList.item(1);
+            StringBuilder eulerString = new StringBuilder();
+
+            eulerString.append(node.getTextContent());
+            eulerString.append(" ");
+
+            for (int i = 2; i < nodeList.getLength(); i++) {
+                node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    eulerString.append(node.getTextContent());
+                    if (i != nodeList.getLength() - 1) {
+                        eulerString.append(",");
+                    }
+                }
+            }
+            System.out.println(String.format("XML->Euler: \"" + eulerString.toString() + "\""));
+            parseEuler(eulerString.toString());
+
+        } catch (Exception e) {
+            status = -21;
+            e.printStackTrace();
+            throw new ExecutionControl.NotImplementedException("Error in parseXML");
+        }
+    }
+
 }
