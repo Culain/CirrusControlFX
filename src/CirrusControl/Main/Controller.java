@@ -118,7 +118,8 @@ public class Controller implements Initializable {
 
     }
 
-    //Events
+
+    //region Events Control Tab
 
     private void sendGuiCommand(String command) {
         sendGuiCommand(command, true);
@@ -215,10 +216,13 @@ public class Controller implements Initializable {
         Platform.runLater(() -> tabPaneCommands.setDisable(false));
         Platform.runLater(() -> responseList.add(new ConsoleElement("^^^ Done")));
     }
+    //endregion
+
 }
 
 
-// Console Elements
+//region Control Elements
+
 class ConsoleElement {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private int port = 20001;
@@ -334,3 +338,4 @@ class PingThread implements Callable<String> {
         }
     }
 }
+//endregion

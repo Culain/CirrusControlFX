@@ -170,7 +170,7 @@
       </TabPane>
       <HBox>
          <children>
-            <ProgressBar fx:id="progressBarBottom" maxWidth="1.7976931348623157E308" progress="0.5" HBox.hgrow="ALWAYS">
+             <ProgressBar fx:id="progressBarBottom" maxWidth="1.7976931348623157E308" progress="0" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
