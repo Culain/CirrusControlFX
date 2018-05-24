@@ -1,5 +1,6 @@
 package CirrusControl.Main;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -14,15 +15,15 @@ import java.util.Scanner;
 
 final class CirrusScanner {
 
-    private int multiCommandServer = 0;
-    private int port = 20001;
+    private final int port = 20001;
 
     SimpleStringProperty ipAddress = new SimpleStringProperty("127.0.0.1");
     SimpleIntegerProperty selectedModel = new SimpleIntegerProperty(1);
     SimpleIntegerProperty selectedScanner = new SimpleIntegerProperty(0);
+    public SimpleBooleanProperty multiCommandServer = new SimpleBooleanProperty(false);
 
     CirrusScanner() {
-        assert true;
+        assert true;        //no special constructor
     }
 
     /* REGEX FOR IP-ADDRESSES
@@ -37,7 +38,10 @@ final class CirrusScanner {
 
     Response sendCommand(String command, int Master) {
         String socketIp = ipAddress.getValue();
-        int socketPort = port + Master + multiCommandServer * 30000; // add 30000 if the MultiCommandServer is used
+        int socketPort = port + Master;
+        if (multiCommandServer.getValue()) {
+            socketPort += 30000;    // add 30000 if the MultiCommandServer is used
+        }
 
         try {
             if (command.startsWith("MOD")){     //clear Memory on Scanner
@@ -67,15 +71,19 @@ final class CirrusScanner {
         } catch (SocketTimeoutException e) {
             return "TIMEOUT";
         }
+
         Scanner sc = new Scanner(socket.getInputStream());
         PrintStream p = new PrintStream(socket.getOutputStream());
         StringBuilder stringbuilder = new StringBuilder();
 
-        p.println(data);
-        while (sc.hasNext()){
+        p.print(data);
+        socket.shutdownOutput();
+
+        while (sc.hasNext()) {
             stringbuilder.append(sc.next());
             stringbuilder.append(" ");      //add whitespace for later parsing
         }
+
         socket.close();
         return stringbuilder.toString();
     }

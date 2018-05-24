@@ -25,6 +25,7 @@ public class Controller implements Initializable {
     //    public TextArea textArea_Console = new TextArea();
     private final ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
 
+
     @FXML
     private ProgressBar progressBarBottom;
     @FXML
@@ -39,11 +40,16 @@ public class Controller implements Initializable {
     private ListView<ConsoleElement> guiConsole;
     @FXML
     private TabPane tabPaneCommands;
+    @FXML
+    private CheckBox Checkbox_MultiComServer;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Bindings
         TextField_IpAddress.textProperty().bindBidirectional(scanner.ipAddress);
+        Checkbox_MultiComServer.selectedProperty().bindBidirectional(scanner.multiCommandServer);
+
 
         //Setup Model Spinner
         SpinnerValueFactory<Integer> modelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1024, 1);
@@ -115,9 +121,7 @@ public class Controller implements Initializable {
             });
             return cell;
         });
-
     }
-
 
     //region Events Control Tab
 
@@ -128,9 +132,10 @@ public class Controller implements Initializable {
     private void sendGuiCommand(String command, boolean output) {
         new Thread(() -> {
             Platform.runLater(() -> tabPaneCommands.setDisable(true));
+            int sendPort = 20001 + Spinner_Scanner.getValue() + (scanner.multiCommandServer.getValue() ? 30000 : 0);    //standart port + master + multicomserver
             if (output) {
-                Platform.runLater(() -> responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue(), Spinner_Scanner.getValue())));
-                System.out.println(String.format("<<< Sending %s to %s:%d", command, scanner.ipAddress.getValue(), 20001 + Spinner_Scanner.getValue()));
+                Platform.runLater(() -> responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue(), sendPort)));
+                System.out.println(String.format("<<< Sending %s to %s:%d", command, scanner.ipAddress.getValue(), sendPort));
             }
 
             Response response = scanner.sendCommand(command, Spinner_Scanner.getValue());
@@ -220,7 +225,6 @@ public class Controller implements Initializable {
 
 }
 
-
 //region Control Elements
 
 class ConsoleElement {
@@ -252,20 +256,15 @@ class ConsoleElement {
     }
 
     ConsoleElement(elementType type, String command, String address) {
-//        this.type = type;
-//        if (type == elementType.sendMessage) {
-//            this.command = command;
-//            this.ipaddress = address;
-//        }
         this(type, command, address, 20001);
     }
 
-    ConsoleElement(elementType type, String command, String address, int Master) {
+    ConsoleElement(elementType type, String command, String address, int port) {
         this.type = type;
         if (type == elementType.sendMessage) {
             this.command = command;
             this.ipaddress = address;
-            this.port = 20001 + Master;
+            this.port = port;
         }
     }
 
