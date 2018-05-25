@@ -31,12 +31,12 @@ public class Position implements ToListEntry {
     @Override
     public String toListEntry() {
         return String.format(Locale.US,
-                "\t\t\t\tX:\t%.3f\n" +
-                        "\t\t\t\tY:\t%.3f\n" +
-                        "\t\t\t\tZ:\t%.3f\n" +
-                        "\t\t\t\tW:\t%.3f\n" +
-                        "\t\t\t\tP:\t%.3f\n" +
-                        "\t\t\t\tR:\t%.3f", X, Y, Z, W, P, R);
+                "\t\t\t\tX:\t%.3f\t\tW:\t%.3f\n" +
+                        "\t\t\t\tY:\t%.3f\t\tP:\t%.3f\n" +
+                        "\t\t\t\tZ:\t%.3f\t\tR:\t%.3f",
+                X, W,
+                Y, P,
+                Z, R);
     }
 }
 
@@ -55,11 +55,11 @@ class Offset implements ToListEntry {
     @Override
     public String toListEntry() {
         return String.format(Locale.US,
-                "\t\t\t\tX:\t%.3f\n" +
-                        "\t\t\t\tY:\t%.3f\n" +
-                        "\t\t\t\tZ:\t%.3f\n" +
-                        "\t\t\t\tW:\t%.3f\n" +
-                        "\t\t\t\tP:\t%.3f\n" +
-                        "\t\t\t\tR:\t%.3f", X, Y, Z, W, P, R);
+                "\t\t\t\tX:\t%.3f\t\tW:\t%.3f\n" +
+                        "\t\t\t\tY:\t%.3f\t\tP:\t%.3f\n" +
+                        "\t\t\t\tZ:\t%.3f\t\tR:\t%.3f",
+                X, W,
+                Y, P,
+                Z, R);
     }
 }

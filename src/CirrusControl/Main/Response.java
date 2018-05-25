@@ -35,7 +35,7 @@ public class Response {
     private float angle_deviation;
     private int licenseTime;
     private int timeToSend;     //milliseconds
-    private Date creationTime;
+    private final Date creationTime;
     private Position pos;
     private int Locg_IndexConfigID;
     private int locg_ConfigID;

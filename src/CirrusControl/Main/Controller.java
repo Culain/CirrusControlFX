@@ -2,10 +2,10 @@ package CirrusControl.Main;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
@@ -13,10 +13,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class Controller implements Initializable {
@@ -25,52 +22,119 @@ public class Controller implements Initializable {
     //    public TextArea textArea_Console = new TextArea();
     private final ObservableList<ConsoleElement> responseList = FXCollections.observableArrayList();
 
-
-    @FXML
-    private ProgressBar progressBarBottom;
-    @FXML
-    private TextField TextField_IpAddress;
-    @FXML
-    private TextField TextField_SendCommand;
-    @FXML
-    private Spinner<Integer> Spinner_Model;
-    @FXML
-    private Spinner<Integer> Spinner_Scanner;
-    @FXML
-    private ListView<ConsoleElement> guiConsole;
-    @FXML
-    private TabPane tabPaneCommands;
-    @FXML
-    private CheckBox Checkbox_MultiComServer;
-
+    //<editor-fold desc="Command Tab Elements">
+    public ProgressBar progressBarBottom;
+    public TextField TextField_IpAddress;
+    public TextField TextField_SendCommand;
+    public Spinner<Integer> Spinner_Model;
+    public Spinner<Integer> Spinner_Scanner;
+    public ListView<ConsoleElement> guiConsole;
+    public TabPane tabPaneCommands;
+    public CheckBox Checkbox_MultiComServer;
+    //</editor-fold>
+    public Spinner Spinner_Model_calib;
+    public Spinner Spinner_Scanner_calib;
+    public TextField TextField_IpAddress_calib;
+    public CheckBox Checkbox_MultiComServer_calib;
+    public ListView guiConsole_calib;
+    public TextField tf_calib_pos1_x;
+    public TextField tf_calib_pos1_y;
+    public TextField tf_calib_pos1_z;
+    public TextField tf_calib_pos2_x;
+    public TextField tf_calib_pos2_y;
+    public TextField tf_calib_pos2_z;
+    public TextField tf_calib_pos3_x;
+    public TextField tf_calib_pos3_y;
+    public TextField tf_calib_pos3_z;
+    public TextField tf_calib_pos4_x;
+    public TextField tf_calib_pos4_y;
+    public TextField tf_calib_pos4_z;
+    public Label label_calib_pos1;
+    public Label label_calib_pos2;
+    public Label label_calib_pos3;
+    public Label label_calib_pos4;
+    //<editor-fold desc="Calibration Tab Elements">
+    private SimpleStringProperty calib_pos1_x = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos1_y = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos1_z = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos2_x = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos2_y = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos2_z = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos3_x = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos3_y = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos3_z = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos4_x = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos4_y = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos4_z = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos1_text = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos2_text = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos3_text = new SimpleStringProperty();
+    private SimpleStringProperty calib_pos4_text = new SimpleStringProperty();
+    //</editor-fold>
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Bindings
         TextField_IpAddress.textProperty().bindBidirectional(scanner.ipAddress);
         Checkbox_MultiComServer.selectedProperty().bindBidirectional(scanner.multiCommandServer);
+        scanner.selectedModel.bind(Spinner_Model.valueProperty());
+        scanner.selectedScanner.bind(Spinner_Scanner.valueProperty());
 
+        calib_pos1_text.bindBidirectional(label_calib_pos1.textProperty());
+        calib_pos2_text.bindBidirectional(label_calib_pos2.textProperty());
+        calib_pos3_text.bindBidirectional(label_calib_pos3.textProperty());
+        calib_pos4_text.bindBidirectional(label_calib_pos4.textProperty());
+
+        calib_pos1_x.bindBidirectional(tf_calib_pos1_x.textProperty());
+        calib_pos1_y.bindBidirectional(tf_calib_pos1_y.textProperty());
+        calib_pos1_z.bindBidirectional(tf_calib_pos1_z.textProperty());
+
+        calib_pos2_x.bindBidirectional(tf_calib_pos2_x.textProperty());
+        calib_pos2_y.bindBidirectional(tf_calib_pos2_y.textProperty());
+        calib_pos2_z.bindBidirectional(tf_calib_pos2_z.textProperty());
+
+        calib_pos3_x.bindBidirectional(tf_calib_pos3_x.textProperty());
+        calib_pos3_y.bindBidirectional(tf_calib_pos3_y.textProperty());
+        calib_pos3_z.bindBidirectional(tf_calib_pos3_z.textProperty());
+
+        calib_pos4_x.bindBidirectional(tf_calib_pos4_x.textProperty());
+        calib_pos4_y.bindBidirectional(tf_calib_pos4_y.textProperty());
+        calib_pos4_z.bindBidirectional(tf_calib_pos4_z.textProperty());
+
+
+        //Bindings Calibration
+        TextField_IpAddress_calib.textProperty().bindBidirectional(scanner.ipAddress);
+        Checkbox_MultiComServer_calib.selectedProperty().bindBidirectional(scanner.multiCommandServer);
+
+//        calib_pos1_text.set("test");
+//        calib_pos1_text.bind(Bindings.format("test %s", calib_pos1_x.getValue()));
+//        label_calib_pos1.textProperty().bind(calib_pos1_text);
 
         //Setup Model Spinner
         SpinnerValueFactory<Integer> modelValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1024, 1);
         Spinner_Model.setValueFactory(modelValueFactory);
+        Spinner_Model_calib.setValueFactory(modelValueFactory);
 
         //Setup ScannerID Spinner
         SpinnerValueFactory<Integer> scannerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 9, 0);
         Spinner_Scanner.setValueFactory(scannerValueFactory);
+        Spinner_Scanner_calib.setValueFactory(scannerValueFactory);
 
         //Setup guiConsole
         guiConsole.setItems(responseList);
+        guiConsole_calib.setItems(responseList);
 
         //Tooltips
-//        TextField_IpAddress.setTooltip(new Tooltip ("Select Scanner IP Address"));  //will be set with ip address (see below)
         Spinner_Scanner.setTooltip(new Tooltip("0=Master, 1-9=Slave"));
         Spinner_Model.setTooltip(new Tooltip("Select Model Number"));
+        Spinner_Scanner_calib.setTooltip(new Tooltip("0=Master, 1-9=Slave"));
+        Spinner_Model_calib.setTooltip(new Tooltip("Select Model Number"));
 
         //Set own IP address
         try {
             scanner.setIp(InetAddress.getLocalHost().getHostAddress());
             TextField_IpAddress.setTooltip(new Tooltip("Computer IP: " + InetAddress.getLocalHost().getHostAddress()));
+            TextField_IpAddress_calib.setTooltip(new Tooltip("Computer IP: " + InetAddress.getLocalHost().getHostAddress()));
         } catch (UnknownHostException e) {
             scanner.setIp("127.0.0.1");
         }
@@ -81,13 +145,18 @@ public class Controller implements Initializable {
             ListCell<ConsoleElement> cell = new ListCell<>() {
                 @Override
                 protected void updateItem(ConsoleElement item, boolean empty) {
-                    super.updateItem(item, empty);
+                    try {
+                        super.updateItem(item, empty);
 
-                    if (empty || item == null || item.toString() == null || item.toListEntry() == null) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
-                        setText(item.toListEntry());
+                        if (empty || item == null || item.toString() == null || item.toListEntry() == null) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item.toListEntry());
+                        }
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        setText(String.format("%s\t%s", new SimpleDateFormat("HH:mm:ss").format(new Date()), e.toString()));
                     }
                 }
             };
@@ -110,8 +179,6 @@ public class Controller implements Initializable {
             deleteAllItems.setOnAction(event -> guiConsole.getItems().clear());
             contextMenu.getItems().add(deleteAllItems);
 
-
-
             cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
                     cell.setContextMenu(null);
@@ -123,7 +190,7 @@ public class Controller implements Initializable {
         });
     }
 
-    //region Events Control Tab
+    //<editor-fold desc="Events Control Tab">
 
     private void sendGuiCommand(String command) {
         sendGuiCommand(command, true);
@@ -221,11 +288,129 @@ public class Controller implements Initializable {
         Platform.runLater(() -> tabPaneCommands.setDisable(false));
         Platform.runLater(() -> responseList.add(new ConsoleElement("^^^ Done")));
     }
-    //endregion
+    //</editor-fold>
 
+    public void updateCalibLabel_1() {
+        float posX, posY, posZ;
+
+        try {
+            posX = Float.parseFloat(calib_pos1_x.getValue().replace(",", "."));
+        } catch (Exception e1) {
+            posX = 0;
+        }
+
+        try {
+            posY = Float.parseFloat(calib_pos1_y.getValue().replace(",", "."));
+        } catch (Exception e2) {
+            posY = 0;
+        }
+
+        try {
+            posZ = Float.parseFloat(calib_pos1_z.getValue().replace(",", "."));
+        } catch (Exception e3) {
+            posZ = 0;
+        }
+
+        calib_pos1_text.set(String.format(Locale.US, "CALP %d,1,%.3f,%.3f,%.3f,0,0,0", scanner.selectedModel.getValue(), posX, posY, posZ));
+    }
+
+    public void updateCalibLabel_2() {
+        float posX, posY, posZ;
+
+        try {
+            posX = Float.parseFloat(calib_pos2_x.getValue().replace(",", "."));
+        } catch (Exception e1) {
+            posX = 0;
+        }
+
+        try {
+            posY = Float.parseFloat(calib_pos2_y.getValue().replace(",", "."));
+        } catch (Exception e2) {
+            posY = 0;
+        }
+
+        try {
+            posZ = Float.parseFloat(calib_pos2_z.getValue().replace(",", "."));
+        } catch (Exception e3) {
+            posZ = 0;
+        }
+
+        calib_pos2_text.set(String.format(Locale.US, "CALP %d,1,%.3f,%.3f,%.3f,0,0,0", scanner.selectedModel.getValue(), posX, posY, posZ));
+    }
+
+    public void updateCalibLabel_3() {
+        float posX, posY, posZ;
+
+        try {
+            posX = Float.parseFloat(calib_pos3_x.getValue().replace(",", "."));
+        } catch (Exception e1) {
+            posX = 0;
+        }
+
+        try {
+            posY = Float.parseFloat(calib_pos3_y.getValue().replace(",", "."));
+        } catch (Exception e2) {
+            posY = 0;
+        }
+
+        try {
+            posZ = Float.parseFloat(calib_pos3_z.getValue().replace(",", "."));
+        } catch (Exception e3) {
+            posZ = 0;
+        }
+
+        calib_pos3_text.set(String.format(Locale.US, "CALP %d,1,%.3f,%.3f,%.3f,0,0,0", scanner.selectedModel.getValue(), posX, posY, posZ));
+    }
+
+    public void updateCalibLabel_4() {
+        float posX, posY, posZ;
+
+        try {
+            posX = Float.parseFloat(calib_pos4_x.getValue().replace(",", "."));
+        } catch (Exception e1) {
+            posX = 0;
+        }
+
+        try {
+            posY = Float.parseFloat(calib_pos4_y.getValue().replace(",", "."));
+        } catch (Exception e2) {
+            posY = 0;
+        }
+
+        try {
+            posZ = Float.parseFloat(calib_pos4_z.getValue().replace(",", "."));
+        } catch (Exception e3) {
+            posZ = 0;
+        }
+
+        calib_pos4_text.set(String.format(Locale.US, "CALP %d,1,%.3f,%.3f,%.3f,0,0,0", scanner.selectedModel.getValue(), posX, posY, posZ));
+    }
+
+    public void calib_copyP1(ActionEvent actionEvent) {
+        calib_pos4_x.setValue(calib_pos1_x.getValue());
+        calib_pos4_y.setValue(calib_pos1_y.getValue());
+        calib_pos4_z.setValue(calib_pos1_z.getValue());
+        updateCalibLabel_4();
+    }
+
+    public void calib_copyP2(ActionEvent actionEvent) {
+        calib_pos4_x.setValue(calib_pos2_x.getValue());
+        calib_pos4_y.setValue(calib_pos2_y.getValue());
+        calib_pos4_z.setValue(calib_pos2_z.getValue());
+        updateCalibLabel_4();
+    }
+
+    public void calib_copyP3(ActionEvent actionEvent) {
+
+        calib_pos4_x.setValue(calib_pos3_x.getValue());
+        calib_pos4_y.setValue(calib_pos3_y.getValue());
+        calib_pos4_z.setValue(calib_pos3_z.getValue());
+        updateCalibLabel_4();
+    }
 }
 
-//region Control Elements
+
+//<editor-fold desc="Console Element">
 
 class ConsoleElement {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -304,8 +489,11 @@ class ConsoleElement {
         standard, response, address, control, sendMessage
     }
 }
+//</editor-fold>
 
-// Helper class for pinging multiple Scanner
+
+//<editor-fold desc="Helper class for pinging multiple Scanner">
+
 class PingThread implements Callable<String> {
     private final String host;
 
@@ -337,4 +525,4 @@ class PingThread implements Callable<String> {
         }
     }
 }
-//endregion
+//</editor-fold>
