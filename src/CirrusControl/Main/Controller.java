@@ -32,11 +32,11 @@ public class Controller implements Initializable {
     public TabPane tabPaneCommands;
     public CheckBox Checkbox_MultiComServer;
     //</editor-fold>
-    public Spinner Spinner_Model_calib;
-    public Spinner Spinner_Scanner_calib;
+    public Spinner<Integer> Spinner_Model_calib;
+    public Spinner<Integer> Spinner_Scanner_calib;
     public TextField TextField_IpAddress_calib;
     public CheckBox Checkbox_MultiComServer_calib;
-    public ListView guiConsole_calib;
+    public ListView<ConsoleElement> guiConsole_calib;
     public TextField tf_calib_pos1_x;
     public TextField tf_calib_pos1_y;
     public TextField tf_calib_pos1_z;
@@ -188,6 +188,55 @@ public class Controller implements Initializable {
             });
             return cell;
         });
+
+        guiConsole_calib.setCellFactory(lv -> {
+
+            ListCell<ConsoleElement> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(ConsoleElement item, boolean empty) {
+                    try {
+                        super.updateItem(item, empty);
+
+                        if (empty || item == null || item.toString() == null || item.toListEntry() == null) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item.toListEntry());
+                        }
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        setText(String.format("%s\t%s", new SimpleDateFormat("HH:mm:ss").format(new Date()), e.toString()));
+                    }
+                }
+            };
+
+            ContextMenu contextMenu = new ContextMenu();
+
+            //TODO: add (set address) context menu item only for address cells
+            MenuItem setAddress = new MenuItem();
+            setAddress.textProperty().bind(Bindings.format("Set IP Address"));
+            setAddress.setOnAction(event -> scanner.setIp(cell.getItem().getip()));
+            contextMenu.getItems().add(setAddress);
+
+            MenuItem deleteItem = new MenuItem();
+            deleteItem.textProperty().bind(Bindings.format("Delete Item"));
+            deleteItem.setOnAction(event -> guiConsole.getItems().remove(cell.getItem()));
+            contextMenu.getItems().add(deleteItem);
+
+            MenuItem deleteAllItems = new MenuItem();
+            deleteAllItems.textProperty().bind(Bindings.format("Delete All Item"));
+            deleteAllItems.setOnAction(event -> guiConsole.getItems().clear());
+            contextMenu.getItems().add(deleteAllItems);
+
+            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+                if (isNowEmpty) {
+                    cell.setContextMenu(null);
+                } else {
+                    cell.setContextMenu(contextMenu);
+                }
+            });
+            return cell;
+        });
     }
 
     //<editor-fold desc="Events Control Tab">
@@ -202,14 +251,14 @@ public class Controller implements Initializable {
             int sendPort = 20001 + Spinner_Scanner.getValue() + (scanner.multiCommandServer.getValue() ? 30000 : 0);    //standart port + master + multicomserver
             if (output) {
                 Platform.runLater(() -> responseList.add(new ConsoleElement(ConsoleElement.elementType.sendMessage, command, scanner.ipAddress.getValue(), sendPort)));
-                System.out.println(String.format("<<< Sending %s to %s:%d", command, scanner.ipAddress.getValue(), sendPort));
+                System.out.println(String.format("<<< Sending \"%s\" to [%s:%d]", command, scanner.ipAddress.getValue(), sendPort));
             }
 
             Response response = scanner.sendCommand(command, Spinner_Scanner.getValue());
 
             if (output) {
                 Platform.runLater(() -> responseList.add(new ConsoleElement(response)));
-                System.out.println(String.format(">>> %s", response.toString()));
+                System.out.println(String.format(">>> \"%s\"", response.toString()));
             }
             Platform.runLater(() -> guiConsole.scrollTo(responseList.size() - 1));    //Scroll to last Entry
             Platform.runLater(() -> tabPaneCommands.setDisable(false));
@@ -406,6 +455,26 @@ public class Controller implements Initializable {
         calib_pos4_y.setValue(calib_pos3_y.getValue());
         calib_pos4_z.setValue(calib_pos3_z.getValue());
         updateCalibLabel_4();
+    }
+
+    public void calib_pos1_action(ActionEvent actionEvent) {
+        sendGuiCommand(calib_pos1_text.getValueSafe());
+    }
+
+    public void calib_pos2_action(ActionEvent actionEvent) {
+        sendGuiCommand(calib_pos2_text.getValueSafe());
+    }
+
+    public void calib_pos3_action(ActionEvent actionEvent) {
+        sendGuiCommand(calib_pos3_text.getValueSafe());
+    }
+
+    public void calib_calc_action(ActionEvent actionEvent) {
+        sendGuiCommand("CALC 1");
+    }
+
+    public void calib_pos4_action(ActionEvent actionEvent) {
+        sendGuiCommand(calib_pos4_text.getValueSafe());
     }
 }
 

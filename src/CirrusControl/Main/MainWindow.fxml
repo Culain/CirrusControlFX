@@ -311,7 +311,7 @@
                                                  <Label fx:id="label_calib_pos1"
                                                         text="CALP 1,1,0.000,0.000,0.000,0,0,0"/>
                                                  <Button alignment="CENTER" mnemonicParsing="false"
-                                                         text="Calibrate Position 1">
+                                                         onAction="#calib_pos1_action" text="Calibrate Position 1">
                                                    <HBox.margin>
                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                    </HBox.margin>
@@ -389,7 +389,7 @@
                                                  <Label fx:id="label_calib_pos2"
                                                         text="CALP 1,2,0.000,0.000,0.000,0,0,0"/>
                                                  <Button alignment="CENTER" mnemonicParsing="false"
-                                                         text="Calibrate Position 2">
+                                                         onAction="#calib_pos2_action" text="Calibrate Position 2">
                                                    <HBox.margin>
                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                    </HBox.margin>
@@ -467,7 +467,7 @@
                                                  <Label fx:id="label_calib_pos3"
                                                         text="CALP 1,3,0.000,0.000,0.000,0,0,0"/>
                                                  <Button alignment="CENTER" mnemonicParsing="false"
-                                                         text="Calibrate Position 3">
+                                                         onAction="#calib_pos3_action" text="Calibrate Position 3">
                                                    <HBox.margin>
                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                    </HBox.margin>
@@ -487,7 +487,8 @@
                                        <children>
                                            <Label text="CALC 1"/>
                                            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                                   mnemonicParsing="false" text="[CALC] Calculate"/>
+                                                   mnemonicParsing="false" onAction="#calib_calc_action"
+                                                   text="[CALC] Calculate"/>
                                        </children>
                                     </HBox>
                                  </content>
@@ -557,7 +558,7 @@
                                                  <Label fx:id="label_calib_pos4"
                                                         text="CALP 1,0,0.000,0.000,0.000,0,0,0"/>
                                                  <Button alignment="CENTER" mnemonicParsing="false"
-                                                         text="Verify Position">
+                                                         onAction="#calib_pos4_action" text="Verify Position">
                                                    <HBox.margin>
                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                    </HBox.margin>
@@ -582,7 +583,7 @@
                                  </content>
                               </TitledPane>
                                <TitledPane animated="false" collapsible="false" maxHeight="1.7976931348623157E308"
-                                           maxWidth="1.7976931348623157E308" text="Console">
+                                           maxWidth="1.7976931348623157E308" text="Console" VBox.vgrow="ALWAYS">
                                  <content>
                                      <ListView fx:id="guiConsole_calib" prefHeight="200.0" prefWidth="200.0"/>
                                  </content>
